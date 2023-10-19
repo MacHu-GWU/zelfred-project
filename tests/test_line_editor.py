@@ -3,13 +3,25 @@
 from zelfred.line_editor import LineEditor
 
 
+def _test_is_cursor_at_begin_or_end_of_line():
+    le = LineEditor()
+    assert le.is_cursor_at_begin_of_line() is True
+    assert le.is_cursor_at_end_of_line() is True
+
+    le.press_key("a")
+    assert le.is_cursor_at_begin_of_line() is False
+    assert le.is_cursor_at_end_of_line() is True
+
+    le.press_left()
+    assert le.is_cursor_at_begin_of_line() is True
+    assert le.is_cursor_at_end_of_line() is False
+
+
 def _test_press_key():
     le = LineEditor()
-    assert le.is_cursor_begin_of_line() is True
     le.press_key("a")
     assert le.line == "a"
     assert le.value == "a"
-    assert le.is_cursor_begin_of_line() is False
 
 
 def _test_enter_text():
@@ -238,6 +250,7 @@ def _test_move_word():
 
 def test():
     print("")
+    _test_is_cursor_at_begin_or_end_of_line()
     _test_press_key()
     _test_enter_text()
     _test_press_backspace()

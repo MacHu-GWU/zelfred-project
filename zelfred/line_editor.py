@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-
+Line editor implementation.
 """
 
 SEP_LIST = "!@#$%^&*()-_+={[}]|\\:;"'<,>.?/'
@@ -12,7 +12,20 @@ class LineEditor:
     Simulate a user input line editor. User can type characters, move cursor,
     backspace, delete, clear line, etc ...
 
-    Empty line editor (``|`` is the cursor):
+    For example, the ``(Query): beautiful|`` (``|`` is the cursor) in the
+    following UI is the line editor.
+
+    .. code-block:: bash
+
+        (Query): beautiful|
+        [x] Beautiful is better than ugly.
+              subtitle 01
+        [ ] Explicit is better than implicit.
+              subtitle 02
+        [ ] Simple is better than complex.
+              subtitle 03
+
+    Empty line editor:
 
     .. code-block:: bash
 
@@ -44,10 +57,16 @@ class LineEditor:
         self.chars = []
         self.cursor_position = 0
 
-    def is_cursor_begin_of_line(self) -> bool:
+    def is_cursor_at_begin_of_line(self) -> bool:
+        """
+        Check if the cursor is at the beginning of the line.
+        """
         return self.cursor_position == 0
 
-    def is_cursor_end_of_line(self) -> bool:  # pragma: no cover
+    def is_cursor_at_end_of_line(self) -> bool:
+        """
+        Check if the cursor is at the end of the line.
+        """
         return self.cursor_position == len(self.chars)
 
     def enter_text(self, text: str):
@@ -58,7 +77,7 @@ class LineEditor:
             self.press_key(key=char)
 
     def _press_key(self, key: str):
-        if self.is_cursor_end_of_line():
+        if self.is_cursor_at_end_of_line():
             self.chars.append(key)
             self.cursor_position += 1
         else:
