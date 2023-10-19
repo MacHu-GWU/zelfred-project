@@ -3,10 +3,10 @@
 """
 You can use one of the following hotkey to do anything using the selected item.
 
-- ``Enter``
-- ``Ctrl + A``
-- ``Ctrl + W``
-- ``Ctrl + P``
+- :meth:`Enter <zelfred.item.Item.enter_handler>`
+- :meth:`Ctrl + A <zelfred.item.Item.ctrl_a_handler>`
+- :meth:`Ctrl + W <zelfred.item.Item.ctrl_w_handler>`
+- :meth:`Ctrl + P <zelfred.item.Item.ctrl_p_handler>`
 
 This module provides some common actions that you can use directly.
 """

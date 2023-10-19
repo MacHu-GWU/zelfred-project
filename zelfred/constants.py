@@ -5,3 +5,6 @@ SHOW_ITEMS_LIMIT = 10
 
 # how many UP/DOWN key pressed when scrolling the UI.
 SCROLL_SPEED = 5
+
+DEFAULT_TITLE = "NO TITLE"
+DEFAULT_SUBTITLE = "NO SUBTITLE"
