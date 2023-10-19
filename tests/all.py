@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
 if __name__ == "__main__":
-    from zelfred.tests import run_cov_test
+    from afwf_shell.tests import run_cov_test
 
-    run_cov_test(__file__, "zelfred", is_folder=True, preview=False)
+    run_cov_test(__file__, "afwf_shell", is_folder=True, preview=False)
