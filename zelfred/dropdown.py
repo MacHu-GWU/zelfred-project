@@ -38,6 +38,7 @@ class Dropdown:
         than ``SHOW_ITEMS_LIMIT`` if we have many items.
     :param cursor_position: the selected item cursor position in the dropdown UI,
         it is a value from 0 to ``SHOW_ITEMS_LIMIT - 1``.
+    :param show_items_limit:  max number of items to show in the UI.
     """
 
     def __init__(self, items: T.List[T_ITEM]):
@@ -45,7 +46,7 @@ class Dropdown:
         self.n_items: int = len(items)
         self.selected_item_index: int = 0
         self.cursor_position: int = 0
-        self._show_items_limit = min(SHOW_ITEMS_LIMIT, self.n_items)
+        self.show_items_limit = min(SHOW_ITEMS_LIMIT, self.n_items)
 
     def update(self, items: T.List[T_ITEM]):
         """
@@ -55,7 +56,7 @@ class Dropdown:
         self.n_items = len(items)
         self.selected_item_index = 0
         self.cursor_position = 0
-        self._show_items_limit = min(SHOW_ITEMS_LIMIT, self.n_items)
+        self.show_items_limit = min(SHOW_ITEMS_LIMIT, self.n_items)
 
     @property
     def selected_item(self) -> T_ITEM:
@@ -76,7 +77,7 @@ class Dropdown:
             self.selected_item_index += 1
             select_delta = 1
         # already the last item in the UI
-        if self.cursor_position == self._show_items_limit - 1:
+        if self.cursor_position == self.show_items_limit - 1:
             cursor_delta = 0
         else:
             self.cursor_position += 1
@@ -87,13 +88,37 @@ class Dropdown:
         """
         Move selector down to pick the next item (if possible) in the dropdown menu.
 
+        Example, before ``dropdown.press_down()``:
+
+        .. code-block:: bash
+
+            (Query):
+            [x] Beautiful is better than ugly.
+                  subtitle 01
+            [ ] Explicit is better than implicit.
+                  subtitle 02
+            [ ] Simple is better than complex.
+                  subtitle 03
+
+        After:
+
+        .. code-block:: bash
+
+            (Query):
+            [ ] Beautiful is better than ugly.
+                  subtitle 01
+            [x] Explicit is better than implicit.
+                  subtitle 02
+            [ ] Simple is better than complex.
+                  subtitle 03
+
         :param n: move selector down ``n`` times.
 
         :return: tuple of ``(select_delta, cursor_delta)``.
         """
         if n >= (self.n_items - 1 - self.selected_item_index):
             self.selected_item_index = self.n_items - 1
-            self.cursor_position = self._show_items_limit - 1
+            self.cursor_position = self.show_items_limit - 1
             return 0, 0
         select_delta, cursor_delta = 0, 0
         for _ in range(n):
@@ -118,6 +143,30 @@ class Dropdown:
     def press_up(self, n: int = 1) -> T.Tuple[int, int]:
         """
         Move selector up to pick the previous item (if possible) in the dropdown menu.
+
+        Example, before ``dropdown.press_up()``:
+
+        .. code-block:: bash
+
+            (Query):
+            [ ] Beautiful is better than ugly.
+                  subtitle 01
+            [ ] Explicit is better than implicit.
+                  subtitle 02
+            [x] Simple is better than complex.
+                  subtitle 03
+
+        After:
+
+        .. code-block:: bash
+
+            (Query):
+            [ ] Beautiful is better than ugly.
+                  subtitle 01
+            [x] Explicit is better than implicit.
+                  subtitle 02
+            [ ] Simple is better than complex.
+                  subtitle 03
 
         :param n: move selector up ``n`` times.
 
@@ -157,7 +206,9 @@ class Dropdown:
     @property
     def menu(self) -> T.List[T.Tuple[T_ITEM, bool]]:
         """
-        The list of items to show in the UI. It is usually a subset of ``self.items``.
+        The list of items to show in the UI. The list is determined by
+        ``selected_item_index`` ``cursor_position`` and ``show_items_limit``
+        together. It is a subset of ``self.items``.
 
         :return: a list of tuples, each tuple contains an item and a boolean value
             indicating whether the item is selected or not.
@@ -169,7 +220,7 @@ class Dropdown:
 
         lower_index = self.selected_item_index - self.cursor_position
         upper_index = self.selected_item_index + (
-            self._show_items_limit - self.cursor_position
+            self.show_items_limit - self.cursor_position
         )
         menu = list()
         for ind, item in enumerate(self.items[lower_index:upper_index]):

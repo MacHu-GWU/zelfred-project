@@ -194,7 +194,7 @@ def _test_update():
     assert dd.n_items == 2
     assert dd.selected_item_index == 0
     assert dd.cursor_position == 0
-    assert dd._show_items_limit == 2
+    assert dd.show_items_limit == 2
 
 
 def _test_selected_item():
