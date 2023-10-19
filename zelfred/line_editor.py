@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import blessed
+"""
+
+"""
 
 SEP_LIST = "!@#$%^&*()-_+={[}]|\\:;"'<,>.?/'
 
@@ -10,10 +12,32 @@ class LineEditor:
     Simulate a user input line editor. User can type characters, move cursor,
     backspace, delete, clear line, etc ...
 
+    Empty line editor (``|`` is the cursor):
+
+    .. code-block:: bash
+
+        |
+
+    User entered some text, and the cursor is at the end:
+
+    .. code-block:: bash
+
+        my text|
+
+    User entered some text, and the cursor is in the middle:
+
+    .. code-block:: bash
+
+        my |text
+
     :param chars: a list of characters, representing the current line.
+        For example, if ``chars = ["m", "y", " ", "t", "e", "x", "t"]``,
+        then the current line is ``my text``.
     :param cursor_position: the current cursor position. 0 means the cursor is
         at the beginning of the line. 1 means it is after the first character.
         when cursor_position == len(chars), it means the cursor is at the end.
+        For example, if the text is ``my text`` and the ``cursor_position = 5``
+        Then the cursor is at ``my te|xt``.
     """
 
     def __init__(self):
@@ -27,6 +51,9 @@ class LineEditor:
         return self.cursor_position == len(self.chars)
 
     def enter_text(self, text: str):
+        """
+        Enter text into the line editor.
+        """
         for char in text:
             self.press_key(key=char)
 
@@ -39,6 +66,12 @@ class LineEditor:
             self.cursor_position += 1
 
     def press_key(self, key: str, n: int = 1):
+        """
+        Enter a key into the line editor. Also move cursor to the right.
+
+        :param key: the entered character of the key.
+        :param n: number of times to enter the key.
+        """
         for _ in range(n):
             self._press_key(key)
 
@@ -53,6 +86,11 @@ class LineEditor:
             self.chars.pop(self.cursor_position)
 
     def press_backspace(self, n: int = 1):
+        """
+        Delete character backwards in the line editor. Also move cursor to the left.
+
+        :param n: number of characters to delete.
+        """
         for _ in range(n):
             self._press_backspace()
 
@@ -61,10 +99,18 @@ class LineEditor:
             self.cursor_position -= 1
 
     def press_left(self, n: int = 1):
+        """
+        Move cursor to the left.
+
+        :param n: number of times to move cursor to the left.
+        """
         for _ in range(n):
             self._press_left()
 
     def press_home(self):
+        """
+        Move cursor to the beginning of the line.
+        """
         self.cursor_position = 0
 
     def _press_delete(self):
@@ -74,6 +120,11 @@ class LineEditor:
             self.chars.pop(self.cursor_position)
 
     def press_delete(self, n: int = 1):
+        """
+        Delete character forwards in the line editor. Also the cursor stays.
+
+        :param n: number of characters to delete.
+        """
         for _ in range(n):
             self._press_delete()
 
@@ -82,35 +133,58 @@ class LineEditor:
             self.cursor_position += 1
 
     def press_right(self, n: int = 1):
+        """
+        Move cursor to the right.
+
+        :param n: number of times to move cursor to the right.
+        """
         for _ in range(n):
             self._press_right()
 
     def press_end(self):
+        """
+        Move cursor to the end of the line.
+        """
         self.cursor_position = len(self.chars)
 
     def clear_line(self):
+        """
+        Delete all user inputs and move cursor to the beginning of the line.
+        """
         self.chars.clear()
         self.cursor_position = 0
 
     def clear_backward(self):
+        """
+        Delete all user inputs before the cursor and move cursor to the
+        beginning of the line.
+        """
         self.chars = self.chars[self.cursor_position:]
         self.cursor_position = 0
 
     def clear_forward(self):
+        """
+        Delete all user inputs after the cursor and the cursor stays.
+        """
         self.chars = self.chars[: self.cursor_position]
         self.cursor_position = len(self.chars)
 
     def replace_text(self, text: str):
+        """
+        Replace all user inputs with the given text.
+
+        :param text: the text to replace with.
+        """
         self.clear_line()
         self.enter_text(text)
 
-    def move_to_start(self):
-        self.cursor_position = 0
-
-    def move_to_end(self):
-        self.cursor_position = len(self.chars)
+    move_to_start = press_home
+    move_to_end = press_end
 
     def move_word_backward(self):
+        """
+        Move cursor to the beginning of the previous word.
+        """
         # 先获得光标之前的字符串
         line = self.value
         # 按照空格分割开, words 里面的元素可以是空字符串
@@ -137,6 +211,9 @@ class LineEditor:
             self.cursor_position = 0
 
     def move_word_forward(self):
+        """
+        Move cursor to the beginning of the next word.
+        """
         # 先获得光标之后的字符串
         line = "".join(self.chars[self.cursor_position:])
         # 按照空格分割开, words 里面的元素可以是空字符串
@@ -162,6 +239,8 @@ class LineEditor:
     @property
     def line(self) -> str:
         """
+        Return the displayed line.
+
         Example: ``ali|ce`` -> line = alice
         """
         return "".join(self.chars)
@@ -169,6 +248,8 @@ class LineEditor:
     @property
     def value(self) -> str:
         """
+        The value of the user input, it is the text before the cursor.
+
         Example: ``ali|ce`` -> value = ali
         """
         return "".join(self.chars[: self.cursor_position])

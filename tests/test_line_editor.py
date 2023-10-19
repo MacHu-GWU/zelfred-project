@@ -5,9 +5,11 @@ from zelfred.line_editor import LineEditor
 
 def _test_press_key():
     le = LineEditor()
+    assert le.is_cursor_begin_of_line() is True
     le.press_key("a")
     assert le.line == "a"
     assert le.value == "a"
+    assert le.is_cursor_begin_of_line() is False
 
 
 def _test_enter_text():
