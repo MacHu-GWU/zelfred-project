@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-
+Dropdown menu implementation.
 """
 
 import typing as T
@@ -13,8 +13,23 @@ from .exc import NoItemToSelectError
 
 class Dropdown:
     """
-    Simulate a item dropdown menu. User can move cursor up and down and scroll
-    up and down the list, hit enter to perform action on the selected item.
+    Simulate an items dropdown menu. User can move or scroll selector up and down
+    to select an item, and then perform :mod:`~zelfred.action`.
+
+    For example, the ``[x] Beautiful is better than ugly.``,
+    ``[ ] Explicit is better than implicit.`` and
+    the ``[ ] Simple is better than complex.`` part in the following UI is the
+    dropdown menu.
+
+    .. code-block:: bash
+
+        (Query):
+        [x] Beautiful is better than ugly.
+              subtitle 01
+        [ ] Explicit is better than implicit.
+              subtitle 02
+        [ ] Simple is better than complex.
+              subtitle 03
 
     :param items: All items in this dropdown menu. We only show ``SHOW_ITEMS_LIMIT``
         items in the UI at a time
@@ -33,6 +48,9 @@ class Dropdown:
         self._show_items_limit = min(SHOW_ITEMS_LIMIT, self.n_items)
 
     def update(self, items: T.List[T_ITEM]):
+        """
+        Update the dropdown menu with new items.
+        """
         self.items = items
         self.n_items = len(items)
         self.selected_item_index = 0
@@ -41,62 +59,114 @@ class Dropdown:
 
     @property
     def selected_item(self) -> T_ITEM:
+        """
+        Return the selected item object. If there is no item, raise
+        :class:`~zelfred.exc.NoItemToSelectError`.
+        """
         try:
             return self.items[self.selected_item_index]
         except IndexError:
             raise NoItemToSelectError
 
-    def _press_down(self):
+    def _press_down(self) -> T.Tuple[int, int]:
         # already the last item
         if self.selected_item_index == self.n_items - 1:
-            pass
+            select_delta = 0
         else:
             self.selected_item_index += 1
+            select_delta = 1
         # already the last item in the UI
         if self.cursor_position == self._show_items_limit - 1:
-            pass
+            cursor_delta = 0
         else:
             self.cursor_position += 1
+            cursor_delta = 1
+        return select_delta, cursor_delta
 
-    def press_down(self, n: int = 1):
+    def press_down(self, n: int = 1) -> T.Tuple[int, int]:
+        """
+        Move selector down to pick the next item (if possible) in the dropdown menu.
+
+        :param n: move selector down ``n`` times.
+
+        :return: tuple of ``(select_delta, cursor_delta)``.
+        """
         if n >= (self.n_items - 1 - self.selected_item_index):
             self.selected_item_index = self.n_items - 1
             self.cursor_position = self._show_items_limit - 1
-            return
+            return 0, 0
+        select_delta, cursor_delta = 0, 0
         for _ in range(n):
-            self._press_down()
+            select_delta_, cursor_delta_ = self._press_down()
+            select_delta += select_delta_
+            cursor_delta += cursor_delta_
+        return select_delta, cursor_delta
 
-    def _press_up(self):
+    def _press_up(self) -> T.Tuple[int, int]:
         if self.selected_item_index == 0:
-            pass
+            select_delta = 0
         else:
             self.selected_item_index -= 1
+            select_delta = -1
         if self.cursor_position == 0:
-            pass
+            cursor_delta = 0
         else:
             self.cursor_position -= 1
+            cursor_delta = -1
+        return select_delta, cursor_delta
 
-    def press_up(self, n: int = 1):
+    def press_up(self, n: int = 1) -> T.Tuple[int, int]:
+        """
+        Move selector up to pick the previous item (if possible) in the dropdown menu.
+
+        :param n: move selector up ``n`` times.
+
+        :return: tuple of ``(select_delta, cursor_delta)``.
+        """
         if n >= self.selected_item_index:
             self.selected_item_index = 0
             self.cursor_position = 0
-            return
+            return 0, 0
+        select_delta, cursor_delta = 0, 0
         for _ in range(n):
-            self._press_up()
+            select_delta_, cursor_delta_ = self._press_up()
+            select_delta += select_delta_
+            cursor_delta += cursor_delta_
+        return select_delta, cursor_delta
 
-    def scroll_down(self, n: int = 1):
-        self.press_down(n * SCROLL_SPEED)
+    def scroll_down(self, n: int = 1) -> T.Tuple[int, int]:
+        """
+        Scroll the dropdown menu down to show more items, also move the selector.
 
-    def scroll_up(self, n: int = 1):
-        self.press_up(n * SCROLL_SPEED)
+        :param n: scroll down ``n`` times. Each time we scroll down ``SCROLL_SPEED`` items.
+
+        :return: tuple of ``(select_delta, cursor_delta)``.
+        """
+        return self.press_down(n * SCROLL_SPEED)
+
+    def scroll_up(self, n: int = 1) -> T.Tuple[int, int]:
+        """
+        Scroll the dropdown menu up to show more items, also move the selector.
+
+        :param n: scroll up ``n`` times. Each time we scroll up ``SCROLL_SPEED`` items.
+
+        :return: tuple of ``(select_delta, cursor_delta)``.
+        """
+        return self.press_up(n * SCROLL_SPEED)
 
     @property
     def menu(self) -> T.List[T.Tuple[T_ITEM, bool]]:
         """
-        The list of items to show in the UI.
+        The list of items to show in the UI. It is usually a subset of ``self.items``.
+
+        :return: a list of tuples, each tuple contains an item and a boolean value
+            indicating whether the item is selected or not.
         """
+        # this code is for debug only
+        # print(self.n_items)
         # print(self.selected_item_index)
         # print(self.cursor_position)
+
         lower_index = self.selected_item_index - self.cursor_position
         upper_index = self.selected_item_index + (
             self._show_items_limit - self.cursor_position
