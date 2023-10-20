@@ -22,7 +22,10 @@ class Debugger:
         """
         Remove the log file.
         """
-        self.path_log_txt.unlink(missing_ok=True)
+        try:
+            self.path_log_txt.unlink()
+        except FileNotFoundError:
+            pass
 
     def enable(self):
         """
