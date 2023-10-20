@@ -1,6 +1,7 @@
 # User Settings
 zelfred.egg-info/
 tmp/
+*.cast
 
 
 # Byte-compiled / optimized / DLL files

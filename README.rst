@@ -1,5 +1,5 @@
 
-.. image:: https://readthedocs.org/projects/zelfred/badge/?version=latest
+.. .. image:: https://readthedocs.org/projects/zelfred/badge/?version=latest
     :target: https://zelfred.readthedocs.io/en/latest/
     :alt: Documentation Status
 
@@ -26,10 +26,10 @@
 
 ------
 
-.. image:: https://img.shields.io/badge/Link-Document-blue.svg
+.. .. image:: https://img.shields.io/badge/Link-Document-blue.svg
     :target: https://zelfred.readthedocs.io/en/latest/
 
-.. image:: https://img.shields.io/badge/Link-API-blue.svg
+.. .. image:: https://img.shields.io/badge/Link-API-blue.svg
     :target: https://zelfred.readthedocs.io/en/latest/py-modindex.html
 
 .. image:: https://img.shields.io/badge/Link-Install-blue.svg
@@ -50,7 +50,7 @@
 
 Welcome to ``zelfred`` Documentation
 ==============================================================================
-Documentation for ``zelfred``.
+🚀 `App Gallery <https://github.com/MacHu-GWU/zelfred-project/blob/main/app_gallery/README.rst>`_
 
 
 .. _install:
