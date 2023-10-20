@@ -76,6 +76,10 @@ zen_of_python = [
 
 
 def handler(query: str, ui: zf.UI):
+    """
+    Handler is the heart of a zelfred App. It is a user defined function that takes
+    the entered query as input, and returns a list of items as output.
+    """
     # if query is not empty
     if query:
         # sort by fuzzy match similarity
@@ -87,7 +91,10 @@ def handler(query: str, ui: zf.UI):
 
 
 if __name__ == "__main__":
+    # reset the debugger and enable it
     zf.debugger.reset()
     zf.debugger.enable()
-    ui = zf.UI(handler=handler)
+
+    # create the UI and run it
+    ui = zf.UI(handler=handler, capture_error=True)
     ui.run()
