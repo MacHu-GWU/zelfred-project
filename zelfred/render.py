@@ -19,7 +19,8 @@ from .exc import TerminalTooSmallError
 @dataclasses.dataclass
 class Render:
     """
-    Generic UI render.
+    Generic UI render. It can print string, print line, clear line, and move
+    cursor up and down.
 
     :param terminal: blessed terminal object.
     :param line_number: store the current line number of the cursor.
@@ -147,13 +148,14 @@ class Render:
 @dataclasses.dataclass
 class UIRender(Render):
     """
-    The Terminal UI Render.
+    The Terminal UI Render. It extends the :class:`Render` class and highly
+    optimized for the ``zelfred`` terminal UI layout.
 
-    See below example: ``|`` represents the cursor.
+    See below example, ``|`` represents the cursor:
 
     .. code-block::
 
-        [Query]: user query here|
+        (Query): user query here|
         [x] item 1 title here
               item 1 subtitle here
         [ ] item 2 title here
@@ -161,8 +163,8 @@ class UIRender(Render):
         [ ] item 3 title here
               item 3 subtitle here
 
-    The first line ``[Query]: user query here|`` is the user input box, it always
-    starts with ``[Query]: ``, and user can enter any text input after that.
+    The first line ``(Query): user query here|`` is the user input box, it always
+    starts with ``(Query): ``, and user can enter any text input after that.
     The cursor cannot go beyond the ``: `` part.
 
     User can use ``Left``, ``Right``, ``Backspace`` and ``Delete`` keys to edit the
@@ -198,10 +200,15 @@ class UIRender(Render):
     # --------------------------------------------------------------------------
     def print_line_editor(self, line_editor: LineEditor) -> str:
         """
-        Render the line editor, the ``[Query]: user query here|`` part. And move
-        the cursor the beginning of the next line.
+        Render the line editor, the ``(Query): user query here|`` part. And move
+        the cursor to the beginning of the next line, so it's ready to print the
+        dropdown menu.
 
         It assumes that there is nothing in the terminal UI before running this.
+
+        :param line_editor: the new :class:`~zelfred.line_editor.LineEditor` object.
+
+        :return: text of the line editor.
         """
 
         return self.print_line(
@@ -214,7 +221,10 @@ class UIRender(Render):
     def clear_line_editor(self):
         """
         Clear the line editor (the query input box at the first line).
-        This function handles the cursor smartly, no matter where the cursor is.
+        It doesn't require to move the cursor to the beginning of the line editor
+        before calling this function, it will handle that automatically.
+        This function will move the cursor to the beginning of the line editor
+        at the end.
 
         Before::
 
@@ -240,6 +250,15 @@ class UIRender(Render):
         self.print_str(self.terminal.clear_eol(), end="")
 
     def update_line_editor(self, line_editor: LineEditor) -> str:
+        """
+        Replace the user input with the new line editor, and move the cursor
+        to the beginning of the next line, so it's ready to print the
+        dropdown menu.
+
+        :param line_editor: the new :class:`~zelfred.line_editor.LineEditor` object.
+
+        :return: text of the line editor.
+        """
         self.clear_line_editor()
         return self.print_line_editor(line_editor)
 
@@ -249,6 +268,10 @@ class UIRender(Render):
     def process_title(self, title: str, line_width: int):
         """
         Make sure the title fix the width of the terminal UI.
+
+        :param title: the item title.
+        :param line_width: the max width of the terminal UI, it will truncate
+            the title and subtitle if they are too long.
         """
         space = line_width - 4 - 1
         if len(title) > space:
@@ -260,6 +283,10 @@ class UIRender(Render):
     def process_subtitle(self, subtitle: str, line_width: int):
         """
         Make sure the subtitle fix the width of the terminal UI.
+
+        :param subtitle: the item subtitle.
+        :param line_width: the max width of the terminal UI, it will truncate
+            the title and subtitle if they are too long.
         """
         space = line_width - 6 - 1
         if len(subtitle) > space:
@@ -274,6 +301,10 @@ class UIRender(Render):
 
             [x] item 1 title here
                 - item 1 subtitle here
+
+        :param item: the :class:`~zelfred.item.Item` object to render.
+        :param line_width: the max width of the terminal UI, it will truncate
+            the title and subtitle if they are too long.
         """
         if selected:
             color = self.terminal.cyan
@@ -309,10 +340,16 @@ class UIRender(Render):
 
         It assumes that the terminal UI is showing the query line editor and
         there's no item in the dropdown menu in the terminal UI before running this.
+
+        :param dropdown: the :class:`~zelfred.dropdown.Dropdown` object to render.
+        :param line_width: the max width of the terminal UI, it will truncate
+            the title and subtitle if they are too long.
+
+        :return: number of items rendered.
         """
-        # the current terminal height may not be able to fit all items
+        # the current terminal height may not be able to fit all items,
         # so we may need to update the ``self.dropdown._show_items_limit``
-        # to fit the terminal height
+        # to fit the terminal height.
         terminal_height = self.terminal.height
         if terminal_height <= 9:
             raise TerminalTooSmallError(
@@ -320,11 +357,12 @@ class UIRender(Render):
                 "It has to have at least 8 lines."
             )
         terminal_items_limit = (terminal_height - 3) // 2
-        dropdown._show_items_limit = min(
-            dropdown._show_items_limit,
+        dropdown.show_items_limit = min(
+            dropdown.show_items_limit,
             terminal_items_limit,
         )
 
+        # raise error if the terminal width is too small
         terminal_width = self.terminal.width
         final_line_width = min(terminal_width, line_width)
         if terminal_width < 80:
@@ -333,11 +371,14 @@ class UIRender(Render):
                 "It has to have at least 80 ascii character wide."
             )
 
+        # if the cursor is at the first line, move to beginning of the second line
+        # before printing
         if self.line_number == 0:
             print(self.terminal.move_down, end="")
             print("\r", end="")
             sys.stdout.flush()
 
+        # print the dropdown menu
         menu = dropdown.menu
         for item, selected in dropdown.menu:
             self.print_item(item, selected=selected, line_width=final_line_width)
@@ -367,6 +408,17 @@ class UIRender(Render):
             self.clear_n_lines(n=self.line_number - 1)
 
     def update_dropdown(self, dropdown: Dropdown, line_width: int) -> int:
+        """
+        Replace the user input with the new line editor, and move the cursor
+        to the beginning of the next line, so it's ready to print the
+        dropdown menu.
+
+        :param dropdown: the :class:`~zelfred.dropdown.Dropdown` object to render.
+        :param line_width: the max width of the terminal UI, it will truncate
+            the title and subtitle if they are too long.
+
+        :return: number of items rendered.
+        """
         self.clear_dropdown()
         return self.print_dropdown(dropdown, line_width)
 
@@ -378,7 +430,7 @@ class UIRender(Render):
 
         Here's an example::
 
-            [Query]: user query here| <- want to move to here
+            (Query): user query here| <- want to move to here
             [x] item 1 title here
                   item 1 subtitle here
             [ ] item 2 title here
@@ -406,14 +458,12 @@ class UIRender(Render):
         self.move_cursor_to_line_editor(line_editor)
         return n_items
 
-
-
     def move_to_end(self) -> int:
         """
         Move the cursor to the end, this method will be used before exit.
         Here's an example::
 
-            [Query]: user query here| <- cursor is currently here
+            (Query): user query here| <- cursor is currently here
             [x] item 1 title here
                   item 1 subtitle here
             [ ] item 2 title here
@@ -431,5 +481,8 @@ class UIRender(Render):
         return move_down_n_lines
 
     def clear_ui(self):
+        """
+        Clear the entire UI, and move the cursor to the right position.
+        """
         self.clear_dropdown()
         self.clear_line_editor()
