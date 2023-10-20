@@ -1,3 +1,5 @@
+.. _app-gallery:
+
 App Gallery
 ==============================================================================
 
@@ -9,12 +11,16 @@ Select Item Using Fuzzy Match
 Use the user input to sort a list of items by fuzzy match similarity.
 Allow user to tap "Enter" to copy the content to clipboard.
 
-`Source Code <https://github.com/MacHu-GWU/zelfred-project/blob/main/app_gallery/select_item_using_fuzzy_match.py>`_
-
-Demo
+**Demo**
 
 .. image:: https://asciinema.org/a/615992.svg
     :target: https://asciinema.org/a/615992
+
+**Source Code**
+
+.. literalinclude:: ./select_item_using_fuzzy_match.py
+   :language: python
+   :linenos:
 
 
 Google Search with Suggestion
@@ -24,9 +30,13 @@ Google Search with Suggestion
 User type query and return a dropdown list of suggestions. User can tab "Enter"
 to Google search in web browser.
 
-`Source Code <https://github.com/MacHu-GWU/zelfred-project/blob/main/app_gallery/google_search_with_suggestion.py>`_
-
-Demo
+**Demo**
 
 .. image:: https://asciinema.org/a/616014.svg
     :target: https://asciinema.org/a/616014
+
+**Source Code**
+
+.. literalinclude:: ./google_search_with_suggestion.py
+   :language: python
+   :linenos:
