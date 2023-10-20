@@ -66,7 +66,7 @@ T_HANDLER = T.Callable[[str, T.Optional["UI"]], T.List[T_ITEM]]
 
 class UI:
     """
-    Alfred Workflow UI simulator.
+    Zelfred terminal UI implementation.
 
     :param handler: a callable function that takes a query string as input and
         returns a list of items.
@@ -590,6 +590,13 @@ class UI:
         debugger.log("=== debug loop end ===")
 
     def run(self, _do_init: bool = True):
+        """
+        Run the UI.
+
+        Read :ref:`ui-event-loop`
+        (or `this link <https://zelfred.readthedocs.io/en/latest/03-UI-Event-Loop/index.html>`_)
+        for more information.
+        """
         try:
             if _do_init:
                 self.initialize_loop()

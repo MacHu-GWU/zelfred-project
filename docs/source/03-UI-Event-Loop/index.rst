@@ -1,3 +1,5 @@
+.. _ui-event-loop:
+
 UI Event Loop
 ==============================================================================
 The UI is just an event loop. Firstly, it goes through the **initialization phase**, then enters the **main event loop**, processing user input and rendering the interactive UI. If it raises any errors and ``capture_error`` is set to ``True``, it will enter the **debug loop** and wait for the user to correct the input. Afterward, it returns to the main event loop.
