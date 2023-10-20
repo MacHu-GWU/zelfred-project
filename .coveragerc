@@ -6,8 +6,10 @@ omit =
     zelfred/tests/*
     zelfred/vendor/*
     zelfred/_version.py
-    zelfred/cli.py
+    zelfred/events.py
     zelfred/paths.py
+    zelfred/render.py
+    zelfred/ui.py
 
 [report]
 # Regexes for lines to exclude from consideration
