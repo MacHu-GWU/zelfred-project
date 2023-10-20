@@ -70,6 +70,22 @@ class UI:
 
     :param handler: a callable function that takes a query string as input and
         returns a list of items.
+    :param hello_message: sometimes the handler execution for the first time
+        run takes long. This message will be shown to user to indicate that
+        the handler is still running, and the UI will show the returned items
+        once the handler is done.
+    :param capture_error: whether you want to capture the error and show it
+        in the UI, or you want to raise the error immediately.
+    :param process_input_immediately: the handler will be called immediately
+        after user input. This is the default behavior.
+    :param process_input_after_query_delay: the handler will be called after
+        a delay of `query_delay` seconds after the first user input. For example,
+        let's say the query delay is 0.3 second. At begin, the user input is empty,
+        then user entered "a". If then the user entered "bcd" within 0.3 second,
+        the handler will not be called to give you the latest items. The handler
+        will be called until the user entered a new key, let's say "e", from
+        0.4 second after he entered "a".
+    :param query_delay: read above.
     """
 
     def __init__(
@@ -136,12 +152,16 @@ class UI:
         print(f"self.need_process_input = {self.need_process_input}")
 
     def replace_handler(self, handler: T_HANDLER):
+        """
+        Replace the current handler with a new handler, and push the current
+        handler to the handler queue (a last in first out stack).
+        """
         self._handler_queue.append(self.handler)
         self.handler = handler
 
     def _clear_query(self):
         """
-        Clear the ``[Query]: {user_query}`` line
+        Clear the ``(Query): {user_query}`` line.
         """
         self.render.clear_line_editor()
         return True
@@ -172,9 +192,9 @@ class UI:
         Clear the item dropdown menu.
         """
         if self.render.line_number > 1:
-            # time.sleep(3)
+            # time.sleep(1)
             self.render.clear_dropdown()
-            # time.sleep(3)
+            # time.sleep(1)
             return True
         else:
             return False
@@ -204,7 +224,7 @@ class UI:
 
     def _print_query(self):
         """
-        Print the ``[Query]: {user_query}`` line
+        Print the ``(Query): {user_query}`` line
         """
         content = self.render.print_line_editor(self.line_editor)
         debugger.log(f"printed: {content!r}")
@@ -430,9 +450,6 @@ class UI:
             self.process_key_pressed_input(pressed=event.value)
 
     def _process_input_v2_after_query_delay(self):
-        """
-        Core logic for processing input.
-        """
         start_time: T.Optional[float] = None
         while 1:
             event = self.event_generator.next()
@@ -472,6 +489,9 @@ class UI:
             self.dropdown.update(items)
 
     def move_to_end(self):
+        """
+        Move the cursor to the next line of the end of the dropdown menu.
+        """
         debugger.log("-------------------- move_to_end --------------------")
         try:
             if self.need_move_to_end:
