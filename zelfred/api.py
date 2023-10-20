@@ -16,5 +16,7 @@ from .query import Query
 from .query import QueryParser
 from .ui import UI
 from .ui import T_HANDLER
+from .action import open_url
+from .action import open_file
 from .debug import debugger
 from . import exc
