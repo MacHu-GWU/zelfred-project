@@ -1,13 +1,10 @@
-zelfred App Gallery
+App Gallery
 ==============================================================================
-.. contents::
-    :depth: 1
-    :local:
 
 
 Select Item Using Fuzzy Match
 ------------------------------------------------------------------------------
-{bdg-success}`Difficulty: Easy`
+:bdg-success:`Difficulty: Easy`
 
 Use the user input to sort a list of items by fuzzy match similarity.
 Allow user to tap "Enter" to copy the content to clipboard.
@@ -22,7 +19,7 @@ Demo
 
 Google Search with Suggestion
 ------------------------------------------------------------------------------
-{bdg-success}`Difficulty: Easy`
+:bdg-success:`Difficulty: Easy`
 
 User type query and return a dropdown list of suggestions. User can tab "Enter"
 to Google search in web browser.
