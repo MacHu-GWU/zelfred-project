@@ -603,7 +603,7 @@ class UI:
             self.main_loop()
         except exc.EndOfInputError as e:
             return e.selection
-        except exc.JumpOutLoopError as e:
+        except exc.JumpOutLoopError:
             if self._handler_queue:
                 self.handler = self._handler_queue.pop()
             self.line_editor.clear_line()
@@ -614,6 +614,9 @@ class UI:
             self.print_query()
             self.print_items()
             return self.run(_do_init=False)
+        except KeyboardInterrupt:
+            self.move_to_end()
+            print("🔴 keyboard interrupt, exit.", end="")
         except Exception as e:
             if self.capture_error:
                 self.debug_loop(e)
