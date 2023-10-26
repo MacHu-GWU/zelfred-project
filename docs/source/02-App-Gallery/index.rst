@@ -56,3 +56,21 @@ User can search folder in a root directory, and then tab "Enter" to enter a sub 
 .. literalinclude:: ./folder_and_file_search.py
    :language: python
    :linenos:
+
+
+Search Google Chrome Bookmark
+------------------------------------------------------------------------------
+:bdg-danger:`Difficulty: Hard`
+
+User type query and return a dropdown list of matched Google Chrome bookmarks.
+User can tap "Enter" to open it in default web browser.
+
+**Demo**
+
+NA
+
+**Source Code**
+
+.. literalinclude:: ./search_google_chrome_bookmark.py
+   :language: python
+   :linenos:

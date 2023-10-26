@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-User can search folder in a root directory, and then tab "Enter" to enter
+User can search folder in a root directory, and then tap "Enter" to enter
 a sub query session to search file in the selected folder. At the end, user
 can tab "Enter" to open the file using the default application.
 

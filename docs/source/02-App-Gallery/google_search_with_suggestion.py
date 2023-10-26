@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-User type query and return a dropdown list of suggestions. User can tab "Enter"
+User type query and return a dropdown list of suggestions. User can tap "Enter"
 to Google search in web browser.
 
 Dependencies:
