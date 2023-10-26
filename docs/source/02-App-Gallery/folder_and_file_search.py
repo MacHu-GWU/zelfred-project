@@ -86,14 +86,6 @@ class FolderItem(zf.Item):
         file_list = [file.name for file in dir_folder.iterdir()]
         ui.run_handler(items=FileItem.from_names(file_list, folder))
 
-        # re-paint the UI
-        ui.line_editor.clear_line()
-        ui.move_to_end()
-        ui.clear_items()
-        ui.clear_query()
-        ui.print_query()
-        ui.print_items()
-
         # enter the main event loop of the sub query
         # user can tap 'F1' to exit the sub query session,
         # and go back to the folder selection session.
@@ -104,6 +96,14 @@ class FolderItem(zf.Item):
             return handler_file(folder, query, ui)
 
         ui.replace_handler(handler)
+
+        # re-paint the UI
+        ui.line_editor.clear_line()
+        ui.move_to_end()
+        ui.clear_items()
+        ui.clear_query()
+        ui.print_query()
+        ui.print_items()
         ui.run(_do_init=False)
 
 

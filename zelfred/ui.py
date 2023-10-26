@@ -100,6 +100,7 @@ class UI:
         # -------------------- input arguments
         self.handler: T_HANDLER = handler
         self._handler_queue: T.List[T_HANDLER] = list()
+        self._line_editor_input_queue: T.List[str] = list()
         self.hello_message: T.Optional[str] = hello_message
         self.capture_error: bool = capture_error
         self.query_delay: float = query_delay
@@ -118,7 +119,7 @@ class UI:
             process_input_immediately = True
         elif flag > 1:
             raise ValueError
-        else: # pragma: no cover
+        else:  # pragma: no cover
             pass
 
         if process_input_immediately:
@@ -153,10 +154,12 @@ class UI:
 
     def replace_handler(self, handler: T_HANDLER):
         """
-        Replace the current handler with a new handler, and push the current
-        handler to the handler queue (a last in first out stack).
+        Replace the current handler with a new handler, and store the
+        current handler and line editor input to the query (a last in first out stack)
+        for future recovery.
         """
         self._handler_queue.append(self.handler)
+        self._line_editor_input_queue.append(self.line_editor.line)
         self.handler = handler
 
     def _clear_query(self):
@@ -552,17 +555,17 @@ class UI:
 
     def initialize_loop(self):
         debugger.log("=== initialize loop start ===")
-        self.print_query() # show initial query, mostly it is empty
-        self.print_hello_items() # show hello items
-        self.run_handler() # run handler using initial query
-        self.move_to_end() # move cursor to the end
-        self.clear_items() # clear items
-        self.clear_query() # clear query
-        self.print_query() # print query
-        self.print_items() # print items
+        self.print_query()  # show initial query, mostly it is empty
+        self.print_hello_items()  # show hello items
+        self.run_handler()  # run handler using initial query
+        self.move_to_end()  # move cursor to the end
+        self.clear_items()  # clear items
+        self.clear_query()  # clear query
+        self.print_query()  # print query
+        self.print_items()  # print items
         debugger.log("=== initialize loop end ===")
 
-    def main_loop(self, _ith: int=0):
+    def main_loop(self, _ith: int = 0):
         while True:
             _ith += 1
             debugger.log(f"=== {_ith}th main loop start ===")
@@ -604,9 +607,13 @@ class UI:
         except exc.EndOfInputError as e:
             return e.selection
         except exc.JumpOutLoopError:
+            # rollback the handler and line editor input to the previous state
             if self._handler_queue:
                 self.handler = self._handler_queue.pop()
-            self.line_editor.clear_line()
+            if self._line_editor_input_queue:
+                self.line_editor.clear_line()
+                self.line_editor.enter_text(self._line_editor_input_queue.pop())
+
             self.run_handler()
             self.move_to_end()
             self.clear_items()
