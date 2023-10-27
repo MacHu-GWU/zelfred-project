@@ -74,7 +74,7 @@ def find_google_chrome_bookmark_file() -> Path:
     Reference: https://www.howtogeek.com/welcome-to-cybersecurity-awareness-week-2023/
     """
     for func in [
-        find_google_chrom_bookmark_file_on_windows(),
+        find_google_chrom_bookmark_file_on_windows,
         find_google_chrome_bookmark_file_on_mac,
     ]:
         try:

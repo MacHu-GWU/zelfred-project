@@ -86,6 +86,7 @@ class UI:
         will be called until the user entered a new key, let's say "e", from
         0.4 second after he entered "a".
     :param query_delay: read above.
+    :param quit_on_action: whether you want to quit the UI after user action.
     """
 
     def __init__(
@@ -96,6 +97,7 @@ class UI:
         process_input_immediately: bool = False,
         process_input_after_query_delay: bool = False,
         query_delay: float = 0.3,
+        quit_on_action: bool = True,
     ):
         # -------------------- input arguments
         self.handler: T_HANDLER = handler
@@ -104,6 +106,7 @@ class UI:
         self.hello_message: T.Optional[str] = hello_message
         self.capture_error: bool = capture_error
         self.query_delay: float = query_delay
+        self.quit_on_action: bool = quit_on_action
 
         # -------------------- internal implementation related
         self.render: UIRender = UIRender()
@@ -154,9 +157,8 @@ class UI:
 
     def replace_handler(self, handler: T_HANDLER):
         """
-        Replace the current handler with a new handler, and store the
-        current handler and line editor input to the query (a last in first out stack)
-        for future recovery.
+        Replace the current handler with a new handler, and push the current
+        handler to the handler queue (a last in first out stack).
         """
         self._handler_queue.append(self.handler)
         self._line_editor_input_queue.append(self.line_editor.line)
@@ -432,15 +434,21 @@ class UI:
                         readchar.key.LF,
                     ):
                         selected_item.enter_handler(ui=self)
+                        selected_item.post_enter_handler(ui=self)
                     elif pressed == readchar.key.CTRL_A:
                         selected_item.ctrl_a_handler(ui=self)
+                        selected_item.post_ctrl_a_handler(ui=self)
                     elif pressed == readchar.key.CTRL_W:
                         selected_item.ctrl_w_handler(ui=self)
+                        selected_item.post_ctrl_w_handler(ui=self)
                     elif pressed == readchar.key.CTRL_P:
                         selected_item.ctrl_p_handler(ui=self)
+                        selected_item.post_ctrl_p_handler(ui=self)
                     else:  # pragma: no cover
                         raise NotImplementedError
-                raise exc.EndOfInputError(selection=selected_item)
+                    if self.quit_on_action:
+                        raise exc.EndOfInputError(selection=selected_item)
+                    return
 
         if pressed == readchar.key.F1:
             raise exc.JumpOutLoopError

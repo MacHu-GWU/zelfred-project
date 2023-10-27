@@ -11,6 +11,8 @@ import uuid
 import dataclasses
 
 from .constants import DEFAULT_TITLE, DEFAULT_SUBTITLE
+from .exc import EndOfInputError
+
 
 if T.TYPE_CHECKING:  # pragma: no cover
     from .ui import UI
@@ -67,7 +69,7 @@ class Item:
         when user hits ``Enter`` on this item. Develop should inherit this class
         and override this method to perform user defined action.
 
-        :param ui: the :class:`~afwf_shell.ui.UI` object.
+        :param ui: the :class:`~zelfred.ui.UI` object.
         """
         pass
 
@@ -77,7 +79,7 @@ class Item:
         when user hits ``Ctrl + A`` on this item. Develop should inherit this class
         and override this method to perform user defined action.
 
-        :param ui: the :class:`~afwf_shell.ui.UI` object.
+        :param ui: the :class:`~zelfred.ui.UI` object.
         """
         pass
 
@@ -87,7 +89,7 @@ class Item:
         when user hits ``Ctrl + W`` on this item. Develop should inherit this class
         and override this method to perform user defined action.
 
-        :param ui: the :class:`~afwf_shell.ui.UI` object.
+        :param ui: the :class:`~zelfred.ui.UI` object.
         """
         pass
 
@@ -97,9 +99,46 @@ class Item:
         when user hits ``Ctrl + P`` on this item. Develop should inherit this class
         and override this method to perform user defined action.
 
-        :param ui: the :class:`~afwf_shell.ui.UI` object.
+        :param ui: the :class:`~zelfred.ui.UI` object.
         """
         pass
+
+    def post_enter_handler(self, ui: "UI"):
+        """
+        This is the abstract method that will update the UI after taking user action.
+
+        :param ui: the :class:`~zelfred.ui.UI` object.
+        """
+        ui.render.clear_n_lines(1)
+        ui.need_run_handler = False
+        raise EndOfInputError(selection=self)
+
+    def post_ctrl_a_handler(self, ui: "UI"):
+        """
+        This is the abstract method that will update the UI after taking user action.
+
+        :param ui: the :class:`~zelfred.ui.UI` object.
+        """
+        ui.need_run_handler = False
+        raise EndOfInputError(selection=self)
+
+    def post_ctrl_w_handler(self, ui: "UI"):
+        """
+        This is the abstract method that will update the UI after taking user action.
+
+        :param ui: the :class:`~zelfred.ui.UI` object.
+        """
+        ui.need_run_handler = False
+        raise EndOfInputError(selection=self)
+
+    def post_ctrl_p_handler(self, ui: "UI"):
+        """
+        This is the abstract method that will update the UI after taking user action.
+        
+        :param ui: the :class:`~zelfred.ui.UI` object.
+        """
+        ui.need_run_handler = False
+        raise EndOfInputError(selection=self)
 
 
 T_ITEM = T.TypeVar("T_ITEM", bound=Item)
