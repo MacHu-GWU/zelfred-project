@@ -103,7 +103,7 @@ class Item:
         """
         pass
 
-    def post_enter_handler(self, ui: "UI"):
+    def post_enter_handler(self, ui: "UI"):  # pragma: no cover
         """
         This is the abstract method that will update the UI after taking user action.
 
@@ -113,7 +113,7 @@ class Item:
         ui.need_run_handler = False
         raise EndOfInputError(selection=self)
 
-    def post_ctrl_a_handler(self, ui: "UI"):
+    def post_ctrl_a_handler(self, ui: "UI"):  # pragma: no cover
         """
         This is the abstract method that will update the UI after taking user action.
 
@@ -122,7 +122,7 @@ class Item:
         ui.need_run_handler = False
         raise EndOfInputError(selection=self)
 
-    def post_ctrl_w_handler(self, ui: "UI"):
+    def post_ctrl_w_handler(self, ui: "UI"):  # pragma: no cover
         """
         This is the abstract method that will update the UI after taking user action.
 
@@ -131,10 +131,10 @@ class Item:
         ui.need_run_handler = False
         raise EndOfInputError(selection=self)
 
-    def post_ctrl_p_handler(self, ui: "UI"):
+    def post_ctrl_p_handler(self, ui: "UI"):  # pragma: no cover
         """
         This is the abstract method that will update the UI after taking user action.
-        
+
         :param ui: the :class:`~zelfred.ui.UI` object.
         """
         ui.need_run_handler = False
