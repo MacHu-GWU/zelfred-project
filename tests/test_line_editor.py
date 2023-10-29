@@ -247,6 +247,80 @@ def _test_move_word():
     assert le.line == "    "
     assert le.value == "    "
 
+    # --- delete backward
+    le.replace_text(text)
+    le.delete_word_backward()
+    assert le.line == " hello world alice "
+    assert le.value == " hello world alice "
+
+    le.replace_text(text)
+    le.press_left(1)
+    le.delete_word_backward()
+    assert le.line == " hello world alice  "
+    assert le.value == " hello world alice "
+
+    le.replace_text(text)
+    le.press_left(2)
+    le.delete_word_backward()
+    assert le.line == " hello world alice b "
+    assert le.value == " hello world alice "
+
+    le.replace_text(text)
+    le.press_left(7)
+    le.delete_word_backward()
+    assert le.line == " hello world ce bob "
+    assert le.value == " hello world "
+
+    le.replace_text(text)
+    le.move_to_start()
+    le.delete_word_backward()
+    assert le.line == " hello world alice bob "
+    assert le.value == ""
+
+    le.replace_text("    ")
+    le.delete_word_backward()
+    assert le.line == ""
+    assert le.value == ""
+
+    # --- delete forward
+    le.replace_text(text)
+    le.move_to_start()
+    le.delete_word_forward()
+    assert le.line == " world alice bob "
+    assert le.value == ""
+
+    le.replace_text(text)
+    le.move_to_start()
+    le.press_right(1)
+    le.delete_word_forward()
+    assert le.line == "  world alice bob "
+    assert le.value == " "
+
+    le.replace_text(text)
+    le.move_to_start()
+    le.press_right(2)
+    le.delete_word_forward()
+    assert le.line == " h world alice bob "
+    assert le.value == " h"
+
+    le.replace_text(text)
+    le.move_to_start()
+    le.press_right(7)
+    le.delete_word_forward()
+    assert le.line == " hello  alice bob "
+    assert le.value == " hello "
+
+    le.replace_text(text)
+    le.move_to_end()
+    le.delete_word_forward()
+    assert le.line == text
+    assert le.value == text
+
+    le.replace_text("    ")
+    le.delete_word_forward()
+    assert le.line == "    "
+    assert le.value == "    "
+
 
 def test():
     print("")

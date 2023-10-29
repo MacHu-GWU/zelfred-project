@@ -8,8 +8,9 @@ omit =
     zelfred/_version.py
     zelfred/events.py
     zelfred/paths.py
-    zelfred/render.py
     zelfred/ui.py
+    zelfred/ui_process_key_pressed.py
+
 
 [report]
 # Regexes for lines to exclude from consideration

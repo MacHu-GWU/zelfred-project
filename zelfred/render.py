@@ -474,7 +474,11 @@ class UIRender(Render):
 
         :param n_items: number of items in the dropdown menu.
         """
-        move_down_n_lines = self.n_lines - self.line_number
+        if self.n_lines == 1 and self.line_number == 0:
+            move_down_n_lines = 1
+        else:
+            move_down_n_lines = self.n_lines - self.line_number
+        # print(f"n_lines = {self.n_lines}, line_number = {self.line_number}, move_down_n_lines = {move_down_n_lines}") # DEBUG ONLY
         if move_down_n_lines:
             self.print_str(move_down_n_lines * self.terminal.move_down, end="")
             self.line_number += move_down_n_lines

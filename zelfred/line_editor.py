@@ -4,7 +4,7 @@
 Line editor implementation.
 """
 
-SEP_LIST = "!@#$%^&*()-_+={[}]|\\:;"'<,>.?/'
+SEP_LIST = "!@#$%^&*()-_+={[}]|\\:;" "<,>.?/"
 
 
 class LineEditor:
@@ -140,7 +140,7 @@ class LineEditor:
 
     def press_delete(self, n: int = 1):
         """
-        Delete character forwards in the line editor. Also the cursor stays.
+        Delete character forwards in the line editor. Also, the cursor stays.
 
         :param n: number of characters to delete.
         """
@@ -178,7 +178,7 @@ class LineEditor:
         Delete all user inputs before the cursor and move cursor to the
         beginning of the line.
         """
-        self.chars = self.chars[self.cursor_position:]
+        self.chars = self.chars[self.cursor_position :]
         self.cursor_position = 0
 
     def clear_forward(self):
@@ -200,9 +200,9 @@ class LineEditor:
     move_to_start = press_home
     move_to_end = press_end
 
-    def move_word_backward(self):
+    def _locate_previous_word_position(self) -> int:
         """
-        Move cursor to the beginning of the previous word.
+        Locate the cursor position of the beginning of previous word.
         """
         # 先获得光标之前的字符串
         line = self.value
@@ -224,17 +224,30 @@ class LineEditor:
                 words = words[:-ind]
             words[-1] = ""
             # print(f"after: words = {words}")
-            self.cursor_position = len(" ".join(words))
+            return len(" ".join(words))
         # 如果找不到非空字符串, 则移动到行首
         else:
-            self.cursor_position = 0
+            return 0
 
-    def move_word_forward(self):
+    def move_word_backward(self):
         """
-        Move cursor to the beginning of the next word.
+        Move cursor to the beginning of previous word.
+        """
+        self.cursor_position = self._locate_previous_word_position()
+
+    def delete_word_backward(self):
+        """
+        Delete the previous word.
+        """
+        delta = self.cursor_position - self._locate_previous_word_position()
+        self.press_backspace(delta)
+
+    def _locate_next_word_position(self) -> int:
+        """
+        Locate the cursor position of the beginning of next word.
         """
         # 先获得光标之后的字符串
-        line = "".join(self.chars[self.cursor_position:])
+        line = "".join(self.chars[self.cursor_position :])
         # 按照空格分割开, words 里面的元素可以是空字符串
         words = line.split(" ")
         # print(f"before: words = {words}")
@@ -248,12 +261,25 @@ class LineEditor:
         # 如果找到了非空字符串, 则计算这个非空字符串起之前的所有字符串的总长度
         # 这个长度就是 cursor 要移动的距离
         if ind is not None:
-            words = words[:(ind+1)]
+            words = words[: (ind + 1)]
             # print(f"after: words = {words}")
-            self.cursor_position += len(" ".join(words))
+            return self.cursor_position + len(" ".join(words))
         # 如果找不到非空字符串, 则移动到行尾
         else:
-            self.cursor_position = len(self.chars)
+            return len(self.chars)
+
+    def move_word_forward(self):
+        """
+        Move cursor to the beginning of next word.
+        """
+        self.cursor_position = self._locate_next_word_position()
+
+    def delete_word_forward(self):
+        """
+        Delete the next word.
+        """
+        delta = self._locate_next_word_position() - self.cursor_position
+        self.press_delete(delta)
 
     @property
     def line(self) -> str:

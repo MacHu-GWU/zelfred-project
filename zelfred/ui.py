@@ -14,11 +14,13 @@ import readchar
 from .vendor.os_platform import IS_WINDOWS
 from . import exc
 from . import events
+from .constants import SHOW_ITEMS_LIMIT, SCROLL_SPEED
 from .item import T_ITEM, Item
 from .line_editor import LineEditor
 from .dropdown import Dropdown
 from .render import UIRender
 from .debug import debugger
+from .ui_process_key_pressed import UIProcessKeyPressedMixin
 
 
 key_to_name = {
@@ -64,7 +66,9 @@ class DebugItem(Item):
 T_HANDLER = T.Callable[[str, T.Optional["UI"]], T.List[T_ITEM]]
 
 
-class UI:
+class UI(
+    UIProcessKeyPressedMixin,
+):
     """
     Zelfred terminal UI implementation.
 
@@ -98,6 +102,8 @@ class UI:
         process_input_after_query_delay: bool = False,
         query_delay: float = 0.3,
         quit_on_action: bool = True,
+        show_items_limit: int = SHOW_ITEMS_LIMIT,
+        scroll_speed: int = SCROLL_SPEED,
     ):
         # -------------------- input arguments
         self.handler: T_HANDLER = handler
@@ -132,9 +138,14 @@ class UI:
         else:  # pragma: no cover
             raise NotImplementedError
 
+        self._create_key_processor_mapper()
         # -------------------- items related --------------------
         self.line_editor: LineEditor = LineEditor()
-        self.dropdown: Dropdown = Dropdown([])
+        self.dropdown: Dropdown = Dropdown(
+            items=[],
+            show_items_limit=show_items_limit,
+            scroll_speed=scroll_speed,
+        )
         self.n_items_on_screen: int = 0
 
         # -------------------- controller flags --------------------
@@ -299,6 +310,9 @@ class UI:
             self.need_print_items = True
             self.need_run_handler = True
 
+    # --------------------------------------------------------------------------
+    # handle key pressed
+    # --------------------------------------------------------------------------
     def process_key_pressed_input(self, pressed: str):
         """
         Process user keyboard input.
@@ -330,130 +344,99 @@ class UI:
         """
         pressed_key_name = key_to_name.get(pressed, pressed)
         debugger.log(f"pressed: {pressed_key_name!r}, key code: {pressed!r}")
+        self._process_key_pressed_input(pressed)
 
-        if pressed == readchar.key.CTRL_C:
-            raise KeyboardInterrupt()
-
-        if pressed == readchar.key.TAB:
-            self.line_editor.clear_line()
-            selected_item = self.dropdown.selected_item
-            if selected_item.autocomplete:
-                self.line_editor.enter_text(selected_item.autocomplete)
-            return
-
-        if pressed == readchar.key.CTRL_X:
-            self.line_editor.clear_line()
-            return
-
-        if pressed in (
-            readchar.key.UP,
-            readchar.key.DOWN,
-            readchar.key.CTRL_E,
-            readchar.key.CTRL_D,
-            readchar.key.CTRL_R,
-            readchar.key.CTRL_F,
-        ):
-            self.need_run_handler: bool = False
-            self.need_clear_query: bool = False
-            self.need_print_query: bool = False
-
-            if pressed in (readchar.key.UP, readchar.key.CTRL_E):
-                self.dropdown.press_up()
-            elif pressed in (readchar.key.DOWN, readchar.key.CTRL_D):
-                self.dropdown.press_down()
-            elif pressed == readchar.key.CTRL_R:
-                self.dropdown.scroll_up()
-            elif pressed == readchar.key.CTRL_F:
-                self.dropdown.scroll_down()
-            else:  # pragma: no cover
-                raise NotImplementedError
-            return
-
-        # note: on windows terminal, the backspace and CTRL+H key code are the same
-        # we have to sacrifice the CTRL+H key to keep BACKSPACE working,
-        # so we put this code block before CTRL+H
-        if pressed == readchar.key.BACKSPACE:
-            self.line_editor.press_backspace()
-            return
-
-        if pressed == readchar.key.DELETE:
-            self.line_editor.press_delete()
-            return
-
-        if pressed in (
-            readchar.key.LEFT,
-            readchar.key.RIGHT,
-            readchar.key.HOME,
-            readchar.key.END,
-            readchar.key.CTRL_H,  # note, CTRL+H won't work on Windows
-            readchar.key.CTRL_L,
-            readchar.key.CTRL_G,
-            readchar.key.CTRL_K,
-        ):
-            self.need_run_handler = False
-            self.need_move_to_end = False
-            self.need_clear_items = False
-            self.need_clear_query = False
-            self.need_print_query = False
-            self.need_print_items = False
-            if pressed in (readchar.key.LEFT, readchar.key.CTRL_H):
-                self.line_editor.press_left()
-            elif pressed in (readchar.key.RIGHT, readchar.key.CTRL_L):
-                self.line_editor.press_right()
-            elif pressed == readchar.key.HOME:
-                self.line_editor.press_home()
-            elif pressed == readchar.key.END:
-                self.line_editor.press_end()
-            elif pressed == readchar.key.CTRL_G:
-                self.line_editor.move_word_backward()
-            elif pressed == readchar.key.CTRL_K:
-                self.line_editor.move_word_forward()
-            else:  # pragma: no cover
-                raise NotImplementedError
-            return
-
-        if pressed in (
-            readchar.key.ENTER,
-            readchar.key.CR,
-            readchar.key.LF,
-            readchar.key.CTRL_A,
-            readchar.key.CTRL_W,
-            readchar.key.CTRL_P,
-        ):
-            if self.dropdown.n_items == 0:
-                raise exc.EndOfInputError(
-                    selection="select nothing",
-                )
-            else:
-                self.move_to_end()
-                if self.dropdown.items:
-                    selected_item = self.dropdown.selected_item
-                    if pressed in (
-                        readchar.key.ENTER,
-                        readchar.key.CR,
-                        readchar.key.LF,
-                    ):
-                        selected_item.enter_handler(ui=self)
-                        selected_item.post_enter_handler(ui=self)
-                    elif pressed == readchar.key.CTRL_A:
-                        selected_item.ctrl_a_handler(ui=self)
-                        selected_item.post_ctrl_a_handler(ui=self)
-                    elif pressed == readchar.key.CTRL_W:
-                        selected_item.ctrl_w_handler(ui=self)
-                        selected_item.post_ctrl_w_handler(ui=self)
-                    elif pressed == readchar.key.CTRL_P:
-                        selected_item.ctrl_p_handler(ui=self)
-                        selected_item.post_ctrl_p_handler(ui=self)
-                    else:  # pragma: no cover
-                        raise NotImplementedError
-                    if self.quit_on_action:
-                        raise exc.EndOfInputError(selection=selected_item)
-                    return
-
-        if pressed == readchar.key.F1:
-            raise exc.JumpOutLoopError
-
-        self.line_editor.press_key(pressed)
+        # if pressed == readchar.key.CTRL_C:
+        #     raise KeyboardInterrupt()
+        #
+        # if pressed == readchar.key.TAB:
+        #     self.line_editor.clear_line()
+        #     selected_item = self.dropdown.selected_item
+        #     if selected_item.autocomplete:
+        #         self.line_editor.enter_text(selected_item.autocomplete)
+        #     return
+        #
+        # if pressed == readchar.key.CTRL_X:
+        #     self.line_editor.clear_line()
+        #     return
+        #
+        # if pressed in (
+        #     readchar.key.UP,
+        #     readchar.key.DOWN,
+        #     readchar.key.CTRL_E,
+        #     readchar.key.CTRL_D,
+        #     readchar.key.CTRL_R,
+        #     readchar.key.CTRL_F,
+        # ):
+        #     self._process_key_pressed_input(pressed)
+        #     return
+        #
+        # # note: on windows terminal, the backspace and CTRL+H key code are the same
+        # # we have to sacrifice the CTRL+H key to keep BACKSPACE working,
+        # # so we put this code block before CTRL+H
+        # if pressed == readchar.key.BACKSPACE:
+        #     self.line_editor.press_backspace()
+        #     return
+        #
+        # if pressed == readchar.key.DELETE:
+        #     self.line_editor.press_delete()
+        #     return
+        #
+        # if pressed in (
+        #     readchar.key.LEFT,
+        #     readchar.key.RIGHT,
+        #     readchar.key.HOME,
+        #     readchar.key.END,
+        #     readchar.key.CTRL_H,  # note, CTRL+H won't work on Windows
+        #     readchar.key.CTRL_L,
+        #     readchar.key.CTRL_G,
+        #     readchar.key.CTRL_K,
+        # ):
+        #     self._process_key_pressed_input(pressed)
+        #     return
+        #
+        # if pressed in (
+        #     readchar.key.ENTER,
+        #     readchar.key.CR,
+        #     readchar.key.LF,
+        #     readchar.key.CTRL_A,
+        #     readchar.key.CTRL_W,
+        #     readchar.key.CTRL_P,
+        # ):
+        #     if self.dropdown.n_items == 0:
+        #         raise exc.EndOfInputError(
+        #             selection="select nothing",
+        #         )
+        #     else:
+        #         self.move_to_end()
+        #         if self.dropdown.items:
+        #             selected_item = self.dropdown.selected_item
+        #             if pressed in (
+        #                 readchar.key.ENTER,
+        #                 readchar.key.CR,
+        #                 readchar.key.LF,
+        #             ):
+        #                 selected_item.enter_handler(ui=self)
+        #                 selected_item.post_enter_handler(ui=self)
+        #             elif pressed == readchar.key.CTRL_A:
+        #                 selected_item.ctrl_a_handler(ui=self)
+        #                 selected_item.post_ctrl_a_handler(ui=self)
+        #             elif pressed == readchar.key.CTRL_W:
+        #                 selected_item.ctrl_w_handler(ui=self)
+        #                 selected_item.post_ctrl_w_handler(ui=self)
+        #             elif pressed == readchar.key.CTRL_P:
+        #                 selected_item.ctrl_p_handler(ui=self)
+        #                 selected_item.post_ctrl_p_handler(ui=self)
+        #             else:  # pragma: no cover
+        #                 raise NotImplementedError
+        #             if self.quit_on_action:
+        #                 raise exc.EndOfInputError(selection=selected_item)
+        #             return
+        #
+        # if pressed == readchar.key.F1:
+        #     raise exc.JumpOutLoopError
+        #
+        # self.line_editor.press_key(pressed)
 
     def _process_input_v1_immediately(self):
         event = self.event_generator.next()
@@ -519,6 +502,18 @@ class UI:
                 debugger.log(f"nothing happen")
         finally:
             self.need_move_to_end = True
+
+    def repaint(self):
+        """
+        Repaint the UI right after the items is ready. This is useful when you want
+        to show a message before running the real handler.
+        """
+        # you should handle the ``ui.run_handler()`` logic yourself
+        self.move_to_end()
+        self.clear_items()
+        self.clear_query()
+        self.print_query()
+        self.print_items()
 
     def print_hello_items(self):
         items = [
@@ -632,6 +627,7 @@ class UI:
         except KeyboardInterrupt:
             self.move_to_end()
             print("🔴 keyboard interrupt, exit.", end="")
+            pass
         except Exception as e:
             if self.capture_error:
                 self.debug_loop(e)

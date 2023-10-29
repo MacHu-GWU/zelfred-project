@@ -41,12 +41,18 @@ class Dropdown:
     :param show_items_limit:  max number of items to show in the UI.
     """
 
-    def __init__(self, items: T.List[T_ITEM]):
+    def __init__(
+        self,
+        items: T.List[T_ITEM],
+        show_items_limit: int = SHOW_ITEMS_LIMIT,
+        scroll_speed: int = SCROLL_SPEED,
+    ):
         self.items: T.List[T_ITEM] = items
         self.n_items: int = len(items)
         self.selected_item_index: int = 0
         self.cursor_position: int = 0
-        self.show_items_limit = min(SHOW_ITEMS_LIMIT, self.n_items)
+        self.show_items_limit = min(show_items_limit, self.n_items)
+        self.scroll_speed = scroll_speed
 
     def update(self, items: T.List[T_ITEM]):
         """
@@ -191,7 +197,7 @@ class Dropdown:
 
         :return: tuple of ``(select_delta, cursor_delta)``.
         """
-        return self.press_down(n * SCROLL_SPEED)
+        return self.press_down(n * self.scroll_speed)
 
     def scroll_up(self, n: int = 1) -> T.Tuple[int, int]:
         """
@@ -201,7 +207,7 @@ class Dropdown:
 
         :return: tuple of ``(select_delta, cursor_delta)``.
         """
-        return self.press_up(n * SCROLL_SPEED)
+        return self.press_up(n * self.scroll_speed)
 
     @property
     def menu(self) -> T.List[T.Tuple[T_ITEM, bool]]:

@@ -73,6 +73,16 @@ class Item:
         """
         pass
 
+    def post_enter_handler(self, ui: "UI"):  # pragma: no cover
+        """
+        This is the abstract method that will update the UI after taking user action.
+
+        :param ui: the :class:`~zelfred.ui.UI` object.
+        """
+        # ui.render.clear_n_lines(1)
+        ui.need_run_handler = False
+        raise EndOfInputError(selection=self)
+
     def ctrl_a_handler(self, ui: "UI"):
         """
         This is the abstract method that will perform user defined action
@@ -82,6 +92,15 @@ class Item:
         :param ui: the :class:`~zelfred.ui.UI` object.
         """
         pass
+
+    def post_ctrl_a_handler(self, ui: "UI"):  # pragma: no cover
+        """
+        This is the abstract method that will update the UI after taking user action.
+
+        :param ui: the :class:`~zelfred.ui.UI` object.
+        """
+        ui.need_run_handler = False
+        raise EndOfInputError(selection=self)
 
     def ctrl_w_handler(self, ui: "UI"):
         """
@@ -93,6 +112,34 @@ class Item:
         """
         pass
 
+    def post_ctrl_w_handler(self, ui: "UI"):  # pragma: no cover
+        """
+        This is the abstract method that will update the UI after taking user action.
+
+        :param ui: the :class:`~zelfred.ui.UI` object.
+        """
+        ui.need_run_handler = False
+        raise EndOfInputError(selection=self)
+
+    def ctrl_u_handler(self, ui: "UI"):
+        """
+        This is the abstract method that will perform user defined action
+        when user hits ``Ctrl + U`` on this item. Develop should inherit this class
+        and override this method to perform user defined action.
+
+        :param ui: the :class:`~zelfred.ui.UI` object.
+        """
+        pass
+
+    def post_ctrl_u_handler(self, ui: "UI"):  # pragma: no cover
+        """
+        This is the abstract method that will update the UI after taking user action.
+
+        :param ui: the :class:`~zelfred.ui.UI` object.
+        """
+        ui.need_run_handler = False
+        raise EndOfInputError(selection=self)
+
     def ctrl_p_handler(self, ui: "UI"):
         """
         This is the abstract method that will perform user defined action
@@ -102,34 +149,6 @@ class Item:
         :param ui: the :class:`~zelfred.ui.UI` object.
         """
         pass
-
-    def post_enter_handler(self, ui: "UI"):  # pragma: no cover
-        """
-        This is the abstract method that will update the UI after taking user action.
-
-        :param ui: the :class:`~zelfred.ui.UI` object.
-        """
-        ui.render.clear_n_lines(1)
-        ui.need_run_handler = False
-        raise EndOfInputError(selection=self)
-
-    def post_ctrl_a_handler(self, ui: "UI"):  # pragma: no cover
-        """
-        This is the abstract method that will update the UI after taking user action.
-
-        :param ui: the :class:`~zelfred.ui.UI` object.
-        """
-        ui.need_run_handler = False
-        raise EndOfInputError(selection=self)
-
-    def post_ctrl_w_handler(self, ui: "UI"):  # pragma: no cover
-        """
-        This is the abstract method that will update the UI after taking user action.
-
-        :param ui: the :class:`~zelfred.ui.UI` object.
-        """
-        ui.need_run_handler = False
-        raise EndOfInputError(selection=self)
 
     def post_ctrl_p_handler(self, ui: "UI"):  # pragma: no cover
         """

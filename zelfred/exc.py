@@ -9,10 +9,12 @@ class EndOfInputError(Exception):
     def __init__(
         self,
         selection: T.Any,
+        message: str = "End of input",
         *args,
     ):
         super().__init__(*args)
         self.selection = selection
+        self.message = message
 
 
 class JumpOutLoopError(Exception):
@@ -25,5 +27,3 @@ class TerminalTooSmallError(SystemError):
 
 class NoItemToSelectError(IndexError):
     pass
-
-

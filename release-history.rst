@@ -15,6 +15,20 @@ x.y.z (Backlog)
 **Miscellaneous**
 
 
+0.2.1 (2023-10-28)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+**Features and Improvements**
+
+- Allow user to customize the "key pressed" event processing logics.
+- Allow user to delete word forward and backward
+
+**Minor Improvements**
+
+**Bugfixes**
+
+**Miscellaneous**
+
+
 0.1.5 (2023-10-27)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 **Minor Improvements**

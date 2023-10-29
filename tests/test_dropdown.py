@@ -17,7 +17,7 @@ def get_selected_item(menu) -> str:
 
 
 def _test_high_amount_of_items():
-    dd = Dropdown(items=list("abcdefghijklmnopqrstuvwxyz"))
+    dd = Dropdown(items=list("abcdefghijklmnopqrstuvwxyz"), show_items_limit=10)
     assert dd.selected_item_index == 0
     assert dd.cursor_position == 0
 
