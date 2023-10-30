@@ -1,16 +1,20 @@
 # -*- coding: utf-8 -*-
 
 """
+Feature:
+
 User type query and return a dropdown list of matched Google Chrome bookmarks.
 User can tap "Enter" to open it in default web browser.
 
-This is just a demo app, it only works on MacOS.
+Difficulty: Medium
 
 Dependencies:
 
 .. code-block:: bash
 
-    pip install sayt
+    pip install sayt==0.6.3
+
+Demo: https://asciinema.org/a/617801
 """
 
 import typing as T
@@ -18,10 +22,13 @@ import json
 import dataclasses
 from pathlib import Path
 
+# we need this to index and search the data
 import sayt.api as sayt
+
+# import zelfred public API
 import zelfred.api as zf
 
-# define import file paths
+# define important file paths
 dir_home = Path.home()
 dir_zelfred = dir_home.joinpath(".zelfred")
 dir_root = dir_zelfred.joinpath("app-gallery", "search-google-chrome-bookmark")
@@ -203,8 +210,9 @@ class UrlItem(zf.Item):
 
 def handler(query: str, ui: zf.UI):
     """
-    Handler is the heart of a zelfred App. It is a user defined function that takes
-    the entered query as input, and returns a list of items as output.
+    The handler is the core of a Zelfred App. It's a user-defined function
+    that takes the entered query and the UI object as inputs and returns
+    a list of items to render.
     """
     # if query is not empty
     if query:

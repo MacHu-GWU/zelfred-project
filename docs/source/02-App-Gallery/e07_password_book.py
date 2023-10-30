@@ -1,19 +1,23 @@
 # -*- coding: utf-8 -*-
 
 """
+Feature:
+
 User the user input to search the username, allow user to tap "Ctrl A" to copy
 the password to clipboard. Afterward, the UI doesn't exit and wait for the next
 user input.
+
+Difficulty: Hard
 
 Dependencies:
 
 .. code-block:: bash
 
-    pip install fuzzywuzzy
-    pip install python-Levenshtein
-    pip install pyperclip
+    pip install fuzzywuzzy>=0.18.0,<1.0.0
+    pip install python-Levenshtein>=0.21.0,<1.0.0
+    pip install pyperclip>=1.8.0,<2.0.0
 
-Demo: https://asciinema.org/a/615992
+Demo: https://asciinema.org/a/617807
 """
 
 import typing as T
@@ -25,9 +29,9 @@ import zelfred.api as zf
 
 
 @dataclasses.dataclass
-class Item(zf.Item):
+class PasswordItem(zf.Item):
     """
-    Define the custom item class because we need to override the ``enter_handler``.
+    Represent a password item in the dropdown menu.
     """
 
     copied: bool = dataclasses.field(default=False)
@@ -37,6 +41,7 @@ class Item(zf.Item):
         Copy the content to clipboard.
         """
         pyperclip.copy(self.arg)
+        # only set the subtitle of selected item as "Copied"
         for item in ui.dropdown.items:
             item.subtitle = f"hit {ui.terminal.magenta}Ctrl A{ui.terminal.normal} to copy to clipboard"
         ui.dropdown.selected_item.subtitle = (
@@ -44,6 +49,10 @@ class Item(zf.Item):
         )
 
     def post_ctrl_a_handler(self, ui: zf.UI):
+        """
+        After the user input action, we would like to repaint the dropdown menu
+        only to show the "Copied" item, and then wait for the next user input.
+        """
         ui.need_run_handler = False
         ui.need_move_to_end = False
         ui.need_clear_query = False
@@ -51,6 +60,9 @@ class Item(zf.Item):
 
 
 def encode_password(password: str) -> str:
+    """
+    Mask the password with "*".
+    """
     length = len(password)
     if length <= 8:
         return "*" * 12
@@ -62,12 +74,12 @@ def encode_password(password: str) -> str:
 
 def convert_user_pass_to_item_list(
     user_pwd_list: T.List[T.Tuple[str, str]],
-) -> T.List[Item]:
+) -> T.List[PasswordItem]:
     """
     Convert a list of username password pairs to a list of items.
     """
     return [
-        Item(
+        PasswordItem(
             title=f"{user} = {encode_password(pwd)}",
             subtitle=f"hit {ui.terminal.magenta}Ctrl A{ui.terminal.normal} to copy to clipboard",
             uid=user,
@@ -90,8 +102,9 @@ password_book = {
 
 def handler(query: str, ui: zf.UI):
     """
-    Handler is the heart of a zelfred App. It is a user defined function that takes
-    the entered query as input, and returns a list of items as output.
+    The handler is the core of a Zelfred App. It's a user-defined function
+    that takes the entered query and the UI object as inputs and returns
+    a list of items to render.
     """
     # if query is not empty
     if query:

@@ -36,7 +36,7 @@ class Render:
     def __post_init__(self):
         pass
 
-    def _debug(self):
+    def _debug(self):  # pragma: no cover
         print(f"line_number = {self.line_number}")
         print(f"n_lines = {self.n_lines}")
 
@@ -86,7 +86,7 @@ class Render:
         """
         return self.print_str("\r")
 
-    def move_to_start(self) -> int:
+    def move_to_start(self) -> int:  # pragma: no cover
         """
         把光标移动到初始位置. 本质上是把光标向上回退移动到第一行, 然后再用回车符把光标移动到本行初始位置.
         """
@@ -98,7 +98,7 @@ class Render:
         self.line_number = 0
         return n
 
-    def move_up(self, n: int):
+    def move_up(self, n: int):  # pragma: no cover
         """
         把光标移动到初始位置. 本质上是把光标向上回退移动到第一行, 然后再用回车符把光标移动到本行初始位置.
         """
@@ -106,7 +106,7 @@ class Render:
         sys.stdout.flush()
         self.line_number -= n
 
-    def move_down(self, n: int):
+    def move_down(self, n: int):  # pragma: no cover
         """
         把光标移动到初始位置. 本质上是把光标向上回退移动到第一行, 然后再用回车符把光标移动到本行初始位置.
         """
@@ -114,7 +114,7 @@ class Render:
         sys.stdout.flush()
         self.line_number += n
 
-    def clear_n_lines(self, n: int):
+    def clear_n_lines(self, n: int):  # pragma: no cover
         """
         把光标以上的 n 行清空, 并把光标移动到行首. 常用于清除掉已经打印过的内容.
         """
@@ -198,7 +198,10 @@ class UIRender(Render):
     # --------------------------------------------------------------------------
     # line editor
     # --------------------------------------------------------------------------
-    def print_line_editor(self, line_editor: LineEditor) -> str:
+    def print_line_editor(
+        self,
+        line_editor: LineEditor,
+    ) -> str:  # pragma: no cover
         """
         Render the line editor, the ``(Query): user query here|`` part. And move
         the cursor to the beginning of the next line, so it's ready to print the
@@ -218,7 +221,7 @@ class UIRender(Render):
             t=self.terminal,
         )
 
-    def clear_line_editor(self):
+    def clear_line_editor(self):  # pragma: no cover
         """
         Clear the line editor (the query input box at the first line).
         It doesn't require to move the cursor to the beginning of the line editor
@@ -249,7 +252,10 @@ class UIRender(Render):
         self.move_to_start()
         self.print_str(self.terminal.clear_eol(), end="")
 
-    def update_line_editor(self, line_editor: LineEditor) -> str:
+    def update_line_editor(
+        self,
+        line_editor: LineEditor,
+    ) -> str:  # pragma: no cover
         """
         Replace the user input with the new line editor, and move the cursor
         to the beginning of the next line, so it's ready to print the
@@ -265,7 +271,11 @@ class UIRender(Render):
     # --------------------------------------------------------------------------
     # dropdown
     # --------------------------------------------------------------------------
-    def process_title(self, title: str, line_width: int):
+    def process_title(
+        self,
+        title: str,
+        line_width: int,
+    ):  # pragma: no cover
         """
         Make sure the title fix the width of the terminal UI.
 
@@ -280,7 +290,11 @@ class UIRender(Render):
         else:
             return title
 
-    def process_subtitle(self, subtitle: str, line_width: int):
+    def process_subtitle(
+        self,
+        subtitle: str,
+        line_width: int,
+    ):  # pragma: no cover
         """
         Make sure the subtitle fix the width of the terminal UI.
 
@@ -295,7 +309,12 @@ class UIRender(Render):
         else:
             return subtitle
 
-    def print_item(self, item: T_ITEM, selected: bool, line_width: int):
+    def print_item(
+        self,
+        item: T_ITEM,
+        selected: bool,
+        line_width: int,
+    ):  # pragma: no cover
         """
         Render one item in the dropdown menu. It looks like::
 
@@ -327,7 +346,11 @@ class UIRender(Render):
             t=self.terminal,
         )
 
-    def print_dropdown(self, dropdown: Dropdown, line_width: int) -> int:
+    def print_dropdown(
+        self,
+        dropdown: Dropdown,
+        line_width: int,
+    ) -> int:  # pragma: no cover
         """
         Render all items in the dropdown menu, it looks like::
 
@@ -385,7 +408,7 @@ class UIRender(Render):
         n_item = len(menu)
         return n_item
 
-    def clear_dropdown(self):
+    def clear_dropdown(self):  # pragma: no cover
         """
         Before::
 
@@ -407,7 +430,11 @@ class UIRender(Render):
         if self.n_lines > 1:
             self.clear_n_lines(n=self.line_number - 1)
 
-    def update_dropdown(self, dropdown: Dropdown, line_width: int) -> int:
+    def update_dropdown(
+        self,
+        dropdown: Dropdown,
+        line_width: int,
+    ) -> int:  # pragma: no cover
         """
         Replace the user input with the new line editor, and move the cursor
         to the beginning of the next line, so it's ready to print the
@@ -422,7 +449,10 @@ class UIRender(Render):
         self.clear_dropdown()
         return self.print_dropdown(dropdown, line_width)
 
-    def move_cursor_to_line_editor(self, line_editor: LineEditor) -> T.Tuple[int, int]:
+    def move_cursor_to_line_editor(
+        self,
+        line_editor: LineEditor,
+    ) -> T.Tuple[int, int]:  # pragma: no cover
         """
         After the :meth:`Dropdown.print_dropdown` is called, the cursor is at the
         end of the UI. This method moves the cursor back to the user input box,
@@ -447,7 +477,11 @@ class UIRender(Render):
         self.print_str(self.terminal.move_right(n_horizontal), end="")
         return n_vertical, n_horizontal
 
-    def print_ui(self, line_editor: LineEditor, dropdown: Dropdown) -> int:
+    def print_ui(
+        self,
+        line_editor: LineEditor,
+        dropdown: Dropdown,
+    ) -> int:  # pragma: no cover
         """
         Render the entire UI, and move the cursor to the right position.
 
@@ -458,7 +492,7 @@ class UIRender(Render):
         self.move_cursor_to_line_editor(line_editor)
         return n_items
 
-    def move_to_end(self) -> int:
+    def move_to_end(self) -> int:  # pragma: no cover
         """
         Move the cursor to the end, this method will be used before exit.
         Here's an example::
@@ -484,7 +518,7 @@ class UIRender(Render):
             self.line_number += move_down_n_lines
         return move_down_n_lines
 
-    def clear_ui(self):
+    def clear_ui(self):  # pragma: no cover
         """
         Clear the entire UI, and move the cursor to the right position.
         """

@@ -14,24 +14,24 @@ This module provides some common actions that you can use directly.
 import subprocess
 from pathlib import Path
 
-try:
+try:  # pragma: no cover
     from mac_notifications import client as mac_notification_client
 
     has_mac_notifications = True
-except ImportError:
+except ImportError:  # pragma: no cover
     has_mac_notifications = False
 
-try:
+try:  # pragma: no cover
     import pyperclip
 
     has_pyperclip = True
-except ImportError:
+except ImportError:  # pragma: no cover
     has_pyperclip = False
 
 from .vendor.os_platform import IS_WINDOWS
 
 
-def open_url(url: str):
+def open_url(url: str):  # pragma: no cover
     """
     Open a URL in the default browser.
     """
@@ -41,7 +41,7 @@ def open_url(url: str):
         subprocess.run(["open", url])
 
 
-def open_file(path: Path):
+def open_file(path: Path):  # pragma: no cover
     """
     Open a file in the default application.
     """
@@ -51,7 +51,7 @@ def open_file(path: Path):
         subprocess.run(["open", str(path)])
 
 
-def copy_text(text: str):
+def copy_text(text: str):  # pragma: no cover
     """
     Copy text to clipboard.
     """
@@ -65,7 +65,7 @@ def copy_text(text: str):
 def send_mac_notification(
     title: str,
     subtitle: str,
-):
+):  # pragma: no cover
     """
     Send a MAC notification.
 

@@ -1,16 +1,21 @@
 # -*- coding: utf-8 -*-
 
 """
+Feature:
+
 User can search folder in a root directory, and then tap "Enter" to enter
 a sub query session to search file in the selected folder. At the end, user
-can tab "Enter" to open the file using the default application.
+can tab "Enter" to open the file using the default application. Also, user can
+tap "F1" to exit the sub query session and go back to the folder search session.
+
+Difficulty: Hard
 
 Dependencies:
 
 .. code-block:: bash
 
-    pip install fuzzywuzzy
-    pip install python-Levenshtein
+    pip install fuzzywuzzy>=0.18.0,<1.0.0
+    pip install python-Levenshtein>=0.21.0,<1.0.0
 
 Demo: https://asciinema.org/a/616119
 """
@@ -80,31 +85,19 @@ class FolderItem(zf.Item):
         """
         Enter a sub query session.
         """
-        # list files in the selected folder
+        # define the new handler function for the sub query session
         folder = self.arg
-        dir_folder = dir_home.joinpath(self.arg)
-        file_list = [file.name for file in dir_folder.iterdir()]
-        ui.run_handler(items=FileItem.from_names(file_list, folder))
 
-        # enter the main event loop of the sub query
-        # user can tap 'F1' to exit the sub query session,
-        # and go back to the folder selection session.
-        def handler(query: str, ui: zf.UI):
+        def sub_handler(query: str, ui: zf.UI):
             """
             A partial function that using the given folder.
             """
             return handler_file(folder, query, ui)
 
-        ui.replace_handler(handler)
-
-        # re-paint the UI
-        ui.line_editor.clear_line()
-        ui.move_to_end()
-        ui.clear_items()
-        ui.clear_query()
-        ui.print_query()
-        ui.print_items()
-        ui.run(_do_init=False)
+        # run the sub session using the new handler
+        # user can tap 'F1' to exit the sub query session,
+        # and go back to the folder selection session.
+        ui.run_sub_session(handler=sub_handler, initial_query="")
 
 
 dir_home = Path(__file__).absolute().parent.joinpath("home")
@@ -130,8 +123,7 @@ def handler_file(folder: str, query: str, ui: zf.UI):
 
 def handler_folder(query: str, ui: zf.UI):
     """
-    Handler is the heart of a zelfred App. It is a user defined function that takes
-    the entered query as input, and returns a list of items as output.
+    This is the handler for folder selection.
     """
     folder_list = [p.name for p in dir_home.iterdir()]
     # if query is not empty

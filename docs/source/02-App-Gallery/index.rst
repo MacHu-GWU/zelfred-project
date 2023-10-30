@@ -2,7 +2,6 @@
 
 App Gallery
 ==============================================================================
-https://asciinema.org/a/617868
 
 
 Random Password Generator
@@ -63,7 +62,7 @@ Google Search with Suggestion
 ------------------------------------------------------------------------------
 :bdg-warning:`Difficulty: Medium`
 
-User type query and return a dropdown list of suggestions. User can tab "Enter" to Google search in web browser.
+The user types a query and receives a dropdown list of Google search suggestions. The user can then tap "Enter" to perform a Google search in their web browser.
 
 **Demo**
 
@@ -72,32 +71,14 @@ User type query and return a dropdown list of suggestions. User can tab "Enter" 
 
 **Source Code**
 
-.. literalinclude:: ./e02_google_search_with_suggestion.py
-   :language: python
-   :linenos:
-
-
-Folder and File Search
-------------------------------------------------------------------------------
-:bdg-danger:`Difficulty: Hard`
-
-User can search folder in a root directory, and then tab "Enter" to enter a sub query session to search file in the selected folder. At the end, user can tab "Enter" to open the file using the default application.
-
-**Demo**
-
-.. image:: https://asciinema.org/a/616119.svg
-    :target: https://asciinema.org/a/616119
-
-**Source Code**
-
-.. literalinclude:: ./e03_folder_and_file_search.py
+.. literalinclude:: ./e04_google_search_with_suggestion.py
    :language: python
    :linenos:
 
 
 Search Google Chrome Bookmark
 ------------------------------------------------------------------------------
-:bdg-danger:`Difficulty: Hard`
+:bdg-warning:`Difficulty: Medium`
 
 User type query and return a dropdown list of matched Google Chrome bookmarks. User can tap "Enter" to open it in default web browser.
 
@@ -108,7 +89,25 @@ User type query and return a dropdown list of matched Google Chrome bookmarks. U
 
 **Source Code**
 
-.. literalinclude:: ./e04_search_google_chrome_bookmark.py
+.. literalinclude:: ./e05_search_google_chrome_bookmark.py
+   :language: python
+   :linenos:
+
+
+Folder and File Search
+------------------------------------------------------------------------------
+:bdg-danger:`Difficulty: Hard`
+
+User can search folder in a root directory, and then tap "Enter" to enter a sub query session to search file in the selected folder. At the end, user can tab "Enter" to open the file using the default application. Also, user can tap "F1" to exit the sub query session and go back to the folder search session.
+
+**Demo**
+
+.. image:: https://asciinema.org/a/616119.svg
+    :target: https://asciinema.org/a/616119
+
+**Source Code**
+
+.. literalinclude:: ./e06_folder_and_file_search.py
    :language: python
    :linenos:
 

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """
+Feature:
+
 Use the user input to sort a list of items by fuzzy match similarity.
 Allow user to tap "Enter" to copy the content to clipboard.
 
@@ -98,8 +100,9 @@ zen_of_python = [
 
 def handler(query: str, ui: zf.UI):
     """
-    Handler is the heart of a zelfred App. It is a user defined function that takes
-    the entered query as input, and returns a list of items as output.
+    The handler is the core of a Zelfred App. It's a user-defined function
+    that takes the entered query and the UI object as inputs and returns
+    a list of items to render.
     """
     # if query is not empty
     if query:

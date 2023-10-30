@@ -73,6 +73,9 @@ class UI(
     """
     Zelfred terminal UI implementation.
 
+    :param handler: the handler is the core of a Zelfred App. It's a user-defined
+        function that takes the entered query and the UI object as inputs
+        and returns a list of items to render.
     :param handler: a callable function that takes a query string as input and
         returns a list of items.
     :param hello_message: sometimes the handler execution for the first time
@@ -174,8 +177,9 @@ class UI(
 
     def replace_handler(self, handler: T_HANDLER):
         """
-        Replace the current handler with a new handler, and push the current
-        handler to the handler queue (a last in first out stack).
+        Replace the current handler with a new handler, and store the
+        current handler and the current user input query, so that we can
+        recover them when we need.
         """
         self._handler_queue.append(self.handler)
         self._line_editor_input_queue.append(self.line_editor.line)
@@ -428,6 +432,29 @@ class UI(
         self.clear_query()
         self.print_query()
         self.print_items()
+
+    def run_sub_session(
+        self,
+        handler: T_HANDLER,
+        initial_query: str = "",
+    ):
+        """
+        Run a sub session with a new handler. User can tap "F1" to go back to the
+        previous session.
+
+        :param handler: see :class:`UI`
+        :param initial_query: the initial user input query in the sub session.
+        """
+        # replace the current handler with the new handler
+        self.replace_handler(handler)
+        # update the dropdown items and the line editor content
+        self.run_handler()
+        self.line_editor.clear_line()
+        self.line_editor.enter_text(initial_query)
+        # re-paint the UI
+        self.repaint()
+        # enter the main event loop of the sub query session
+        self.run(_do_init=False)
 
     def print_hello_items(self):
         items = [

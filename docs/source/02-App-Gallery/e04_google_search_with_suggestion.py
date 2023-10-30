@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 
 """
-User type query and return a dropdown list of suggestions. User can tap "Enter"
-to Google search in web browser.
+Feature:
+
+The user types a query and receives a dropdown list of Google search suggestions.
+The user can then tap "Enter" to perform a Google search in their web browser.
+
+Difficulty: Medium
 
 Dependencies:
 
@@ -15,21 +19,20 @@ Demo: https://asciinema.org/a/616014
 
 import typing as T
 import dataclasses
+
+# we need this to parse google search API response
 import xml.etree.ElementTree as ET
 
+# we need this to send HTTP request
 import requests
 import zelfred.api as zf
 
 
 @dataclasses.dataclass
 class Item(zf.Item):
-    """
-    Define the custom item class because we need to override the ``enter_handler``.
-    """
-
     def enter_handler(self, ui: zf.UI):
         """
-        Copy the content to clipboard.
+        Open the url in default web browser.
         """
         zf.open_url(self.arg)
 
@@ -77,41 +80,35 @@ class GoogleComplete:
         return suggestion_list
 
 
-gc = GoogleComplete()
-
-
-def convert_str_list_to_item_list(str_list: T.List[str]) -> T.List[Item]:
-    """
-    Convert a string list to a list of items. The string will become the
-    title, uid, autocomplete and the arg.
-    """
-    return [
-        Item(
-            title=s,
-            subtitle=f"hit 'Enter' to Google search {s!r} in web browser",
-            uid=s,
-            autocomplete=s,  # allow user to tap 'Tab' to auto-complete
-            arg=f"https://www.google.com/search?q={encode_query(s)}",  # google search url
-        )
-        for s in str_list
-    ]
+google_complete = GoogleComplete()
 
 
 def handler(query: str, ui: zf.UI):
     """
-    Handler is the heart of a zelfred App. It is a user defined function that takes
-    the entered query as input, and returns a list of items as output.
+    The handler is the core of a Zelfred App. It's a user-defined function
+    that takes the entered query and the UI object as inputs and returns
+    a list of items to render.
     """
-    # if query is not empty
-    if query:
-        suggestion_list = gc.get(query)
-        return convert_str_list_to_item_list(suggestion_list)
     # if query is empty, return the full list in the original order
-    else:
+    if bool(query) is False:
         return [
             Item(
                 title="type something to search in google",
             )
+        ]
+    # if query is not empty
+    else:
+        suggestion_list = google_complete.get(query)
+        return [
+            Item(
+                title=s,
+                subtitle=f"hit 'Enter' to Google search {s!r} in web browser",
+                uid=s,
+                autocomplete=s,
+                # store google search url in arg, so we can access it in enter_handler
+                arg=f"https://www.google.com/search?q={encode_query(s)}",
+            )
+            for s in suggestion_list
         ]
 
 
