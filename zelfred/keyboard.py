@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from sys import platform
+
 from readchar import key
 
 UP = key.UP  # select the previous item in dropdown menu.
@@ -19,22 +21,21 @@ LF = key.LF
 CTRL_W = key.CTRL_W  # user action
 CTRL_E = key.CTRL_E  # select the previous item in dropdown menu.
 CTRL_R = key.CTRL_R  # scroll up
-CTRL_T = key.CTRL_T
+CTRL_T = key.CTRL_T  # user custom shortcut
 CTRL_U = key.CTRL_U  # user action
 CTRL_P = key.CTRL_P  # user action
 CTRL_A = key.CTRL_A  # user action
 CTRL_D = key.CTRL_D  # select the next item in dropdown menu.
 CTRL_F = key.CTRL_F  # scroll down
-CTRL_G = key.CTRL_G
+CTRL_G = key.CTRL_G  # user custom shortcut
 CTRL_H = key.CTRL_H  # DON'T USE THIS, IT DOESN'T WORK ON WINDOWS
 CTRL_K = key.CTRL_K  # delete previous word
 CTRL_L = key.CTRL_L  # delete next word
 CTRL_X = key.CTRL_X  # clear the user input.
 CTRL_C = key.CTRL_C  # keyboard interrupt
-CTRL_B = key.CTRL_B
-CTRL_N = key.CTRL_N
+CTRL_B = key.CTRL_B  # user custom shortcut
+CTRL_N = key.CTRL_N  # user custom shortcut
 
-from sys import platform
 
 if platform.startswith(("linux", "darwin", "freebsd")):
     ALT_LEFT = "\x1bb"  # move to previous word

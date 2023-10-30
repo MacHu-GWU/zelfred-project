@@ -15,7 +15,18 @@ x.y.z (Backlog)
 **Miscellaneous**
 
 
-0.2.1 (2023-10-28)
+0.2.2 (2023-10-30)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+**Minor Improvements**
+
+- Allow user to custom the following shortcut keys's behavior:
+    - ``Ctrl + T``
+    - ``Ctrl + G``
+    - ``Ctrl + B``
+    - ``Ctrl + N``
+
+
+0.2.1 (2023-10-30)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 **Features and Improvements**
 

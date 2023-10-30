@@ -281,6 +281,38 @@ class UIProcessKeyPressedMixin:
         """
         raise exc.JumpOutLoopError
 
+    def process_ctrl_t(self: "UI"):
+        """
+        Default behavior:
+
+        Do nothing. This is reserved for user custom shortcut.
+        """
+        self.wait_next_user_input()
+
+    def process_ctrl_g(self: "UI"):
+        """
+        Default behavior:
+
+        Do nothing. This is reserved for user custom shortcut.
+        """
+        self.wait_next_user_input()
+
+    def process_ctrl_b(self: "UI"):
+        """
+        Default behavior:
+
+        Do nothing. This is reserved for user custom shortcut.
+        """
+        self.wait_next_user_input()
+
+    def process_ctrl_n(self: "UI"):
+        """
+        Default behavior:
+
+        Do nothing. This is reserved for user custom shortcut.
+        """
+        self.wait_next_user_input()
+
     def _create_key_processor_mapper(self):
         self._key_processor_mapper = {
             # dropdown menu
@@ -311,6 +343,11 @@ class UIProcessKeyPressedMixin:
             keyboard.CTRL_W: self.process_ctrl_w,
             keyboard.CTRL_P: self.process_ctrl_p,
             keyboard.F1: self.process_f1,
+            # user custom shortcut
+            keyboard.CTRL_T: self.process_ctrl_t,
+            keyboard.CTRL_G: self.process_ctrl_g,
+            keyboard.CTRL_B: self.process_ctrl_b,
+            keyboard.CTRL_N: self.process_ctrl_n,
         }
 
     def _process_key_pressed_input(self: "UI", key: str):
