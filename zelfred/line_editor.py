@@ -4,7 +4,13 @@
 Line editor implementation.
 """
 
-SEP_LIST = "!@#$%^&*()-_+={[}]|\\:;" "<,>.?/"
+SEP_LIST = "!@#$%^&*()-+={[}]|\\:;" "<,>.?/"
+
+
+def _normalize_separator(s: str, seps: str = SEP_LIST) -> str:
+    for sep in seps:
+        s = s.replace(sep, " ")
+    return s
 
 
 class LineEditor:
@@ -207,7 +213,7 @@ class LineEditor:
         # 先获得光标之前的字符串
         line = self.value
         # 按照空格分割开, words 里面的元素可以是空字符串
-        words = line.split(" ")
+        words = _normalize_separator(line).split(" ")
         # print(f"before: words = {words}")
         # 从后往前找到第一个非空字符串的 index
         ind = None
@@ -249,7 +255,7 @@ class LineEditor:
         # 先获得光标之后的字符串
         line = "".join(self.chars[self.cursor_position :])
         # 按照空格分割开, words 里面的元素可以是空字符串
-        words = line.split(" ")
+        words = _normalize_separator(line).split(" ")
         # print(f"before: words = {words}")
         # 从前往后找到第一个非空字符串
         ind = None
