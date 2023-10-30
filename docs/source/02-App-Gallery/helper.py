@@ -49,6 +49,6 @@ def print_commands(path_py: Path):
 
 if __name__ == "__main__":
     p = Path(
-        "/Users/sanhehu/Documents/GitHub/zelfred-project/docs/source/02-App-Gallery/e02_calculate_file_checksum.py"
+        "/Users/my-username/Documents/GitHub/zelfred-project/docs/source/02-App-Gallery/e01_random_password_generator.py"
     )
     print_commands(p)

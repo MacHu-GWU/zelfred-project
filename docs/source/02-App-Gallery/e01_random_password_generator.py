@@ -128,6 +128,9 @@ def handler(query: str, ui: zf.UI) -> T.List[Item]:
                     pwd = random_password(length)
                     item = Item(
                         # the first line of the item in the UI, usually the content of the item.
+                        # the ui.terminal is a blessed.Terminal object,
+                        # we can use it to add syntax highlight to the text.
+                        # you can find more information at https://blessed.readthedocs.io/en/latest/colors.html
                         title=f"{ui.terminal.cyan}{pwd}{ui.terminal.normal}",
                         # the second line of the item in the UI, usually some helper text.
                         subtitle=f"tap {ui.terminal.magenta}Enter{ui.terminal.normal} to copy this password to clipboard",

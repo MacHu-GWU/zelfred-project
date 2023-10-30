@@ -147,6 +147,9 @@ def handler(query: str, ui: zf.UI) -> T.List[Item]:
             return [
                 Item(
                     title=f"{algo} of {path}",
+                    # the ui.terminal is a blessed.Terminal object,
+                    # we can use it to add syntax highlight to the text.
+                    # you can find more information at https://blessed.readthedocs.io/en/latest/colors.html
                     subtitle=f"tap {ui.terminal.magenta}Enter{ui.terminal.normal} to copy this checksum to clipboard.",
                     variables={
                         "path": f"{path}",

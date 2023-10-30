@@ -2,6 +2,43 @@
 
 App Gallery
 ==============================================================================
+https://asciinema.org/a/617868
+
+
+Random Password Generator
+------------------------------------------------------------------------------
+:bdg-success:`Difficulty: Easy`
+
+The user enters the length of the password, and the UI generates a few random passwords for the user to choose from. The user can tap "Enter" to copy the selected password to the clipboard.
+
+**Demo**
+
+.. image:: https://asciinema.org/a/617869.svg
+    :target: https://asciinema.org/a/617869
+
+**Source Code**
+
+.. literalinclude:: ./e01_random_password_generator.py
+   :language: python
+   :linenos:
+
+
+Calculate File Checksum
+------------------------------------------------------------------------------
+:bdg-success:`Difficulty: Easy`
+
+The user enters (or paste) the absolute path of the file, and the UI generates a few checksum algorithm options, then user can choose one and hit "Enter" to copy the checksum value of the selected algorithm. The UI will stay and user can continue to choose another algorithm and hit "Enter" again.
+
+**Demo**
+
+.. image:: https://asciinema.org/a/617871.svg
+    :target: https://asciinema.org/a/617871
+
+**Source Code**
+
+.. literalinclude:: ./e02_calculate_file_checksum.py
+   :language: python
+   :linenos:
 
 
 Select Item Using Fuzzy Match
@@ -12,12 +49,12 @@ Use the user input to sort a list of items by fuzzy match similarity. Allow user
 
 **Demo**
 
-.. image:: https://asciinema.org/a/615992.svg
-    :target: https://asciinema.org/a/615992
+.. image:: https://asciinema.org/a/617874.svg
+    :target: https://asciinema.org/a/617874
 
 **Source Code**
 
-.. literalinclude:: ./e01_select_item_using_fuzzy_match.py
+.. literalinclude:: ./e03_select_item_using_fuzzy_match.py
    :language: python
    :linenos:
 
