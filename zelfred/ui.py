@@ -426,7 +426,6 @@ class UI(
         Repaint the UI right after the items is ready. This is useful when you want
         to show a message before running the real handler.
         """
-        # you should handle the ``ui.run_handler()`` logic yourself
         self.move_to_end()
         self.clear_items()
         self.clear_query()

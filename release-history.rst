@@ -20,13 +20,21 @@ x.y.z (Backlog)
 **Features and Improvements**
 
 - Allow user to customize the "key pressed" event processing logics.
-- Allow user to delete word forward and backward
+- Allow user to delete word forward and backward.
+- Remove the ``Ctrl + G`` and ``Ctrl + H`` keyboard shortcut.
+- Add the ``Alt + Left`` and ``Alt + Right`` keyboard shortcut to move cursor to the previous or next word.
+- Add the ``Ctrl + U`` user action.
+- Add the ``repaint`` method, allow user to print some helper information before running the user defined handler.
+- Add the ``run_sub_session`` method, allow user to implement a custom handler that can enter a custom sub session.
+- Add ``post_enter_handler``, ``post_ctrl_a_handler``, ``post_ctrl_w_handler``, ``post_ctrl_u_handler``, ``post_ctrl_p_handler`` methods, allow user to custom the behavior after user action. The default behavior is to exit the UI.
 
 **Minor Improvements**
 
-**Bugfixes**
-
-**Miscellaneous**
+- Add the following sample app to app gallery:
+    - random_password_generator
+    - calculate_file_checksum
+    - search_google_chrome_bookmark
+    - password_book
 
 
 0.1.5 (2023-10-27)
