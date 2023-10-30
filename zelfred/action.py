@@ -16,8 +16,17 @@ from pathlib import Path
 
 try:
     from mac_notifications import client as mac_notification_client
+
+    has_mac_notifications = True
 except ImportError:
-    pass
+    has_mac_notifications = False
+
+try:
+    import pyperclip
+
+    has_pyperclip = True
+except ImportError:
+    has_pyperclip = False
 
 from .vendor.os_platform import IS_WINDOWS
 
@@ -42,6 +51,17 @@ def open_file(path: Path):
         subprocess.run(["open", str(path)])
 
 
+def copy_text(text: str):
+    """
+    Copy text to clipboard.
+    """
+    if has_pyperclip is False:
+        raise ImportError(
+            "You need to do 'pip install pyperclip' first to copy text to clipboard."
+        )
+    pyperclip.copy(text)
+
+
 def send_mac_notification(
     title: str,
     subtitle: str,
@@ -57,6 +77,11 @@ def send_mac_notification(
      is using is deprecated. See this discussion for more details
      https://github.com/Jorricks/macos-notifications/issues/8.
     """
+    if has_mac_notifications is False:
+        raise ImportError(
+            "You need to do 'pip install mac_notifications' first to send notification."
+        )
+
     mac_notification_client.create_notification(
         title=title,
         subtitle=subtitle,

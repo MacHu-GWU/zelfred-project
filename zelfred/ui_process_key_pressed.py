@@ -29,13 +29,16 @@ class UIProcessKeyPressedMixin:
         self.need_clear_query: bool = False
         self.need_print_query: bool = False
 
-    def cursor_left_and_right(self: "UI"):
+    def wait_next_user_input(self: "UI"):
         self.need_run_handler = False
         self.need_move_to_end = False
         self.need_clear_items = False
         self.need_clear_query = False
         self.need_print_query = False
         self.need_print_items = False
+
+    def cursor_left_and_right(self: "UI"):
+        self.wait_next_user_input()
 
     def process_up(self: "UI"):
         """

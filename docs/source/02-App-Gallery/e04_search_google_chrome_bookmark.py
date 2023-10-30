@@ -126,13 +126,38 @@ def parse_bookmark_file(p: Path) -> T.List[Bookmark]:
     return extract_bookmark(node=bookmark_dct)
 
 
+# def downloader():
+#     """
+#     Return the list of bookmark object for search.
+#     """
+#     p = find_google_chrome_bookmark_file()
+#     bookmark_list = parse_bookmark_file(p)
+#     return [dataclasses.asdict(bm) for bm in bookmark_list]
+
+
 def downloader():
     """
-    Return the list of bookmark object for search.
+    This function returns dummy data for demo.
     """
-    p = find_google_chrome_bookmark_file()
-    bookmark_list = parse_bookmark_file(p)
-    return [dataclasses.asdict(bm) for bm in bookmark_list]
+    data = [
+        ("Google", "https://www.google.com/"),
+        ("Facebook", "https://www.facebook.com/"),
+        ("Amazon", "https://www.amazon.com/"),
+        ("Apple", "https://www.apple.com/"),
+        ("Linkedin", "https://www.linkedin.com/"),
+        ("Microsoft", "https://www.microsoft.com/"),
+    ]
+    return [
+        dataclasses.asdict(
+            Bookmark(
+                name=name,
+                url=url,
+                name_text=name,
+                name_ngram=name,
+            )
+        )
+        for name, url in data
+    ]
 
 
 # create the search as you type dataset, it will automatically refresh every 5 minutes

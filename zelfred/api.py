@@ -18,5 +18,6 @@ from .ui import UI
 from .ui import T_HANDLER
 from .action import open_url
 from .action import open_file
+from .action import copy_text
 from .debug import debugger
 from . import exc

@@ -17,6 +17,7 @@ Demo: https://asciinema.org/a/615992
 
 import typing as T
 import dataclasses
+
 import pyperclip
 from fuzzywuzzy import process
 import zelfred.api as zf

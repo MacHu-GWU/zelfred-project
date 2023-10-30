@@ -10,6 +10,7 @@ import subprocess
 import dataclasses
 
 import readchar
+from blessed import Terminal
 
 from .vendor.os_platform import IS_WINDOWS
 from . import exc
@@ -90,7 +91,9 @@ class UI(
         will be called until the user entered a new key, let's say "e", from
         0.4 second after he entered "a".
     :param query_delay: read above.
-    :param quit_on_action: whether you want to quit the UI after user action.
+    :param show_items_limit: max number of items to show in the dropdown menu.
+    :param scroll_speed: scroll speed in the dropdown menu.
+
     """
 
     def __init__(
@@ -101,9 +104,9 @@ class UI(
         process_input_immediately: bool = False,
         process_input_after_query_delay: bool = False,
         query_delay: float = 0.3,
-        quit_on_action: bool = True,
         show_items_limit: int = SHOW_ITEMS_LIMIT,
         scroll_speed: int = SCROLL_SPEED,
+        terminal: T.Optional[Terminal] = None,
     ):
         # -------------------- input arguments
         self.handler: T_HANDLER = handler
@@ -112,10 +115,13 @@ class UI(
         self.hello_message: T.Optional[str] = hello_message
         self.capture_error: bool = capture_error
         self.query_delay: float = query_delay
-        self.quit_on_action: bool = quit_on_action
 
         # -------------------- internal implementation related
-        self.render: UIRender = UIRender()
+        if terminal is None:
+            self.terminal = Terminal()
+        else:
+            self.terminal = terminal
+        self.render: UIRender = UIRender(terminal=self.terminal)
         self.event_generator = events.KeyEventGenerator()
         self._process_input: T.Callable
         flag = sum(
@@ -345,98 +351,6 @@ class UI(
         pressed_key_name = key_to_name.get(pressed, pressed)
         debugger.log(f"pressed: {pressed_key_name!r}, key code: {pressed!r}")
         self._process_key_pressed_input(pressed)
-
-        # if pressed == readchar.key.CTRL_C:
-        #     raise KeyboardInterrupt()
-        #
-        # if pressed == readchar.key.TAB:
-        #     self.line_editor.clear_line()
-        #     selected_item = self.dropdown.selected_item
-        #     if selected_item.autocomplete:
-        #         self.line_editor.enter_text(selected_item.autocomplete)
-        #     return
-        #
-        # if pressed == readchar.key.CTRL_X:
-        #     self.line_editor.clear_line()
-        #     return
-        #
-        # if pressed in (
-        #     readchar.key.UP,
-        #     readchar.key.DOWN,
-        #     readchar.key.CTRL_E,
-        #     readchar.key.CTRL_D,
-        #     readchar.key.CTRL_R,
-        #     readchar.key.CTRL_F,
-        # ):
-        #     self._process_key_pressed_input(pressed)
-        #     return
-        #
-        # # note: on windows terminal, the backspace and CTRL+H key code are the same
-        # # we have to sacrifice the CTRL+H key to keep BACKSPACE working,
-        # # so we put this code block before CTRL+H
-        # if pressed == readchar.key.BACKSPACE:
-        #     self.line_editor.press_backspace()
-        #     return
-        #
-        # if pressed == readchar.key.DELETE:
-        #     self.line_editor.press_delete()
-        #     return
-        #
-        # if pressed in (
-        #     readchar.key.LEFT,
-        #     readchar.key.RIGHT,
-        #     readchar.key.HOME,
-        #     readchar.key.END,
-        #     readchar.key.CTRL_H,  # note, CTRL+H won't work on Windows
-        #     readchar.key.CTRL_L,
-        #     readchar.key.CTRL_G,
-        #     readchar.key.CTRL_K,
-        # ):
-        #     self._process_key_pressed_input(pressed)
-        #     return
-        #
-        # if pressed in (
-        #     readchar.key.ENTER,
-        #     readchar.key.CR,
-        #     readchar.key.LF,
-        #     readchar.key.CTRL_A,
-        #     readchar.key.CTRL_W,
-        #     readchar.key.CTRL_P,
-        # ):
-        #     if self.dropdown.n_items == 0:
-        #         raise exc.EndOfInputError(
-        #             selection="select nothing",
-        #         )
-        #     else:
-        #         self.move_to_end()
-        #         if self.dropdown.items:
-        #             selected_item = self.dropdown.selected_item
-        #             if pressed in (
-        #                 readchar.key.ENTER,
-        #                 readchar.key.CR,
-        #                 readchar.key.LF,
-        #             ):
-        #                 selected_item.enter_handler(ui=self)
-        #                 selected_item.post_enter_handler(ui=self)
-        #             elif pressed == readchar.key.CTRL_A:
-        #                 selected_item.ctrl_a_handler(ui=self)
-        #                 selected_item.post_ctrl_a_handler(ui=self)
-        #             elif pressed == readchar.key.CTRL_W:
-        #                 selected_item.ctrl_w_handler(ui=self)
-        #                 selected_item.post_ctrl_w_handler(ui=self)
-        #             elif pressed == readchar.key.CTRL_P:
-        #                 selected_item.ctrl_p_handler(ui=self)
-        #                 selected_item.post_ctrl_p_handler(ui=self)
-        #             else:  # pragma: no cover
-        #                 raise NotImplementedError
-        #             if self.quit_on_action:
-        #                 raise exc.EndOfInputError(selection=selected_item)
-        #             return
-        #
-        # if pressed == readchar.key.F1:
-        #     raise exc.JumpOutLoopError
-        #
-        # self.line_editor.press_key(pressed)
 
     def _process_input_v1_immediately(self):
         event = self.event_generator.next()

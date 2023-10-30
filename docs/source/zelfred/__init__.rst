@@ -18,8 +18,10 @@ sub packages and modules
     events <events>
     exc <exc>
     item <item>
+    keyboard <keyboard>
     line_editor <line_editor>
     query <query>
     render <render>
     ui <ui>
+    ui_process_key_pressed <ui_process_key_pressed>
     
