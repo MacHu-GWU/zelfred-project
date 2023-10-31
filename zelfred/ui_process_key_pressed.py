@@ -341,6 +341,7 @@ class UIProcessKeyPressedMixin:
             keyboard.ENTER: self.process_enter,
             keyboard.CTRL_A: self.process_ctrl_a,
             keyboard.CTRL_W: self.process_ctrl_w,
+            keyboard.CTRL_U: self.process_ctrl_u,
             keyboard.CTRL_P: self.process_ctrl_p,
             keyboard.F1: self.process_f1,
             # user custom shortcut
