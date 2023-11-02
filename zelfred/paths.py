@@ -26,4 +26,4 @@ dir_unit_test = dir_project_root / "tests"
 # afwf_shell
 # ------------------------------------------------------------------------------
 dir_home = Path.home()
-path_log_txt = dir_home / ".afwf_shell-log.txt"
+path_log_txt = dir_home / ".zelfred-log.txt"
