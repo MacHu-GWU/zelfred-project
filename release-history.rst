@@ -15,6 +15,14 @@ x.y.z (Backlog)
 **Miscellaneous**
 
 
+0.2.4 (2023-11-01)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+**Bugfixes**
+
+- Fix a bug that user has to tap CTRL + C multiple times to jump out of the sub session.
+- Fix a bug that the debug log should write to ``${HOME}/.zelfred-log.txt``.
+
+
 0.2.3 (2023-10-31)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 **Bugfixes**
