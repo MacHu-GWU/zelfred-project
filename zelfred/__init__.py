@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
 """
-Alfred Workflow Shell Simulator.
+Interactive terminal application framework.
 """
 
 from ._version import __version__
 
-__short_description__ = "Alfred Workflow Shell Simulator."
+__short_description__ = "Interactive terminal application framework."
 __license__ = "GPL"
 __author__ = "Sanhe Hu"
 __author_email__ = "husanhe@gmail.com"

@@ -25,20 +25,57 @@ class UIProcessKeyPressedMixin:
     """
 
     def cursor_up_and_down(self: "UI"):
+        """
+        A helper method should be called after the cursor moves up or down.
+
+        - need_run_handler: False, the user input query is not changed, so we
+            don't need to run the handler again.
+        - need_move_to_end: True, the dropdown menu may change, so we need to
+            move the cursor to the end of the line in the next event loop
+        - need_clear_items: True, the dropdown menu may change, so we need to
+            clear the dropdown menu.
+        - need_clear_query: False, the user input query is not changed, so we
+            don't need to clear the user input query.
+        - need_print_query: False, the user input query is not changed, so we
+            don't need to print the user input query.
+        - need_print_items: True, the dropdown menu may change, so we need to
+            print the dropdown menu.
+        - need_process_input: True, we need to process the user input next time.
+        """
         self.need_run_handler: bool = False
         self.need_clear_query: bool = False
         self.need_print_query: bool = False
 
     def wait_next_user_input(self: "UI"):
+        """
+        Don't repaint
+        """
+        self.cursor_left_and_right()
+
+    def cursor_left_and_right(self: "UI"):
+        """
+        A helper method should be called after the cursor moves left and right.
+
+        - need_run_handler: False, the user input query is not changed, so we
+            don't need to run the handler again.
+        - need_move_to_end: False, the dropdown menu is not changed, so we
+            don't need to move the cursor to the end of the line.
+        - need_clear_items: False, the dropdown menu is not changed, so we
+            don't need to clear the dropdown menu.
+        - need_clear_query: False, the user input query is not changed, so we
+            don't need to clear the user input query.
+        - need_print_query: False, the user input query is not changed, so we
+            don't need to print the user input query.
+        - need_print_items: False, the dropdown menu is not change, so we
+            don't need to print the dropdown menu.
+        - need_process_input: True, we need to process the user input next time.
+        """
         self.need_run_handler = False
         self.need_move_to_end = False
         self.need_clear_items = False
         self.need_clear_query = False
         self.need_print_query = False
         self.need_print_items = False
-
-    def cursor_left_and_right(self: "UI"):
-        self.wait_next_user_input()
 
     def process_up(self: "UI"):
         """
@@ -279,7 +316,7 @@ class UIProcessKeyPressedMixin:
 
         Jump out the sub-session, return to the previous view.
         """
-        raise exc.JumpOutLoopError
+        raise exc.JumpOutSessionError
 
     def process_ctrl_t(self: "UI"):
         """

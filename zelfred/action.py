@@ -54,6 +54,9 @@ def open_file(path: Path):  # pragma: no cover
 def copy_text(text: str):  # pragma: no cover
     """
     Copy text to clipboard.
+
+    If your system doesn't support copy to clipboard, for example, if it is
+    in an SSH remote shell, it will raise ``pyperclip.PyperclipException``
     """
     if has_pyperclip is False:
         raise ImportError(

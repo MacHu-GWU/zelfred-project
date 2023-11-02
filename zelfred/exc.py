@@ -1,10 +1,16 @@
 # -*- coding: utf-8 -*-
 
+"""
+todo: doc string here
+"""
+
 import typing as T
 
 
 class EndOfInputError(Exception):
-    """ """
+    """
+    todo: doc string here
+    """
 
     def __init__(
         self,
@@ -17,13 +23,25 @@ class EndOfInputError(Exception):
         self.message = message
 
 
-class JumpOutLoopError(Exception):
+class JumpOutSessionError(Exception):
+    """
+    todo: doc string here
+    """
     pass
 
 
+JumpOutLoopError = JumpOutSessionError  # this is for backward compatibility
+
+
 class TerminalTooSmallError(SystemError):
+    """
+    todo: doc string here
+    """
     pass
 
 
 class NoItemToSelectError(IndexError):
+    """
+    todo: doc string here
+    """
     pass

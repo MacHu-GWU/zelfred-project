@@ -453,7 +453,7 @@ class UI(
         # re-paint the UI
         self.repaint()
         # enter the main event loop of the sub query session
-        self.run(_do_init=False)
+        self._run_session(_do_init=False)
 
     def print_hello_items(self):
         items = [
@@ -535,13 +535,28 @@ class UI(
         self.print_debug_items(e)
         debugger.log("=== debug loop end ===")
 
-    def run(self, _do_init: bool = True):
+    def _run_session(self, _do_init: bool = True):
         """
-        Run the UI.
+        Run a "session" in the UI. A "session" has a main loop, and it's handler
+        to process user input query.
 
         Read :ref:`ui-event-loop`
         (or `this link <https://zelfred.readthedocs.io/en/latest/03-UI-Event-Loop/index.html>`_)
         for more information.
+
+
+        ``except exc.JumpOutSessionError:``
+
+        This error will be raised when user
+        :meth:`press F1 <zelfred.ui_process_key_pressed.JumpOutSessionError.process_f1>`
+        If the current session is a sub session, then it rolls backs the handler
+        and line editor input to the previous state. If the current session is
+        the main session, then it will do nothing.
+
+        ``except exc.KeyboardInterrupt:``
+
+        This error will be raised when user press ``Ctrl-C``. It will move the
+        cursor to the end and prepare to exit the UI.
         """
         try:
             if _do_init:
@@ -549,8 +564,7 @@ class UI(
             self.main_loop()
         except exc.EndOfInputError as e:
             return e.selection
-        except exc.JumpOutLoopError:
-            # rollback the handler and line editor input to the previous state
+        except exc.JumpOutSessionError:
             if self._handler_queue:
                 self.handler = self._handler_queue.pop()
             if self._line_editor_input_queue:
@@ -563,16 +577,24 @@ class UI(
             self.clear_query()
             self.print_query()
             self.print_items()
-            return self.run(_do_init=False)
-        except KeyboardInterrupt:
+            return self._run_session(_do_init=False)
+        except KeyboardInterrupt as e:
             self.move_to_end()
-            print("🔴 keyboard interrupt, exit.", end="")
-            pass
+            raise e
         except Exception as e:
             if self.capture_error:
                 self.debug_loop(e)
-                return self.run(_do_init=False)
+                return self._run_session(_do_init=False)
             else:
                 raise e
+
+    def run(self):
+        """
+        Run the UI.
+        """
+        try:
+            self._run_session()
+        except KeyboardInterrupt:
+            print("🔴 keyboard interrupt, exit.", end="")
         finally:
             print("")
