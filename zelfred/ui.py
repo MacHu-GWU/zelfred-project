@@ -97,6 +97,13 @@ class UI(
     :param show_items_limit: max number of items to show in the dropdown menu.
     :param scroll_speed: scroll speed in the dropdown menu.
 
+    Additional private attributes:
+
+    :param _handler_queue: user may nest session in another session, this LIFO
+        queue stores the handler functions of the parent sessions, so that
+        when we exit the inner session and go back to the previous session.
+    :param _line_editor_input_queue: similar to ``_handler_queue``, but stores
+        the parent sessions' user input queries.
     """
 
     def __init__(
@@ -327,30 +334,40 @@ class UI(
         """
         Process user keyboard input.
 
-        - UP: move up
-        - DOWN: move down
-        - LEFT: move left
-        - RIGHT: move right
-        - HOME: move to start of the line
-        - END: move to end of the line
+        Zelfred default key bindings:
 
-        - CTRL + E: move up
-        - CTRL + D: move down
-        - CTRL + R: scroll up
-        - CTRL + F: scroll down
-        - CTRL + H: move left
-        - CTRL + L: move right
-        - CTRL + G: move word left
-        - CTRL + K: move word right
+        - ⬆: tap ``Ctrl + E`` or ``UP`` to move item selection cursor up (previous item).
+        - ⏫: tap ``Ctrl + R`` to scroll item selection cursor up.
+        - ⬇️: tap ``Ctrl + D`` or ``DOWN`` to move item selection cursor down (next item).
+        - ⏬: tap ``Ctrl + F`` to scroll item selection cursor down.
+        - ⬅️: tap ``LEFT`` to move query input cursor to the left.
+        - ➡️: tap ``RIGHT`` to move query input cursor to the right.
+        - ⏪: tap ``Alt + LEFT`` to move query input cursor to the previous word.
+        - ⏩: tap ``Alt + Right`` to move query input cursor to the next word.
+        - ⏮️: tap ``HOME`` to move query input cursor to the beginning of the line.
+        - ⏭️: tap ``END`` to move query input cursor to the end of the line.
+        - ◀️: tap ``Ctrl + K`` to delete the previous word.
+        - ▶️: tap ``Ctrl + L`` to delete the next word.
+        - ↩️: tap ``Ctrl + X`` to clear the query input.
+        - ◀️: tap ``BACKSPACE`` to delete query input backward.
+        - ▶️: tap ``DELETE`` to delete query input forward.
+        - 🔴: tap ``Ctrl + C`` to quit the app.
+        - ⤴️: tap ``F1`` to quit the current sub session and go back to the previous session and recover previous user input.
 
-        - CTRL + X: clear input
+        User defined (customizable) item action:
 
-        Actions:
+        - 🚀: tap ``Enter`` to perform custom user action.
+        - 🚀: tap ``Ctrl + A`` to perform custom item action.
+        - 🚀: tap ``Ctrl + W`` to perform custom item action.
+        - 🚀: tap ``Ctrl + U`` to perform custom item action.
+        - 🚀: tap ``Ctrl + P`` to perform custom item action.
 
-        - Enter:
-        - CTRL + A:
-        - CTRL + W:
-        - CTRL + P:
+        User defined UI keybinding:
+
+        - 🚀: tap ``CTRL + T`` to perform custom UI action, default is "do nothing.
+        - 🚀: tap ``CTRL + G`` to perform custom UI action, default is "do nothing.
+        - 🚀: tap ``CTRL + B`` to perform custom UI action, default is "do nothing.
+        - 🚀: tap ``CTRL + N`` to perform custom UI action, default is "do nothing.
         """
         pressed_key_name = key_to_name.get(pressed, pressed)
         debugger.log(f"pressed: {pressed_key_name!r}, key code: {pressed!r}")
@@ -453,7 +470,7 @@ class UI(
         # re-paint the UI
         self.repaint()
         # enter the main event loop of the sub query session
-        self._run_session(_do_init=False)
+        self.run_session(_do_init=False)
 
     def print_hello_items(self):
         items = [
@@ -497,6 +514,9 @@ class UI(
         self.print_items()
 
     def initialize_loop(self):
+        """
+
+        """
         debugger.log("=== initialize loop start ===")
         self.print_query()  # show initial query, mostly it is empty
         self.print_hello_items()  # show hello items
@@ -509,6 +529,9 @@ class UI(
         debugger.log("=== initialize loop end ===")
 
     def main_loop(self, _ith: int = 0):
+        """
+
+        """
         while True:
             _ith += 1
             debugger.log(f"=== {_ith}th main loop start ===")
@@ -535,7 +558,7 @@ class UI(
         self.print_debug_items(e)
         debugger.log("=== debug loop end ===")
 
-    def _run_session(self, _do_init: bool = True):
+    def run_session(self, _do_init: bool = True):
         """
         Run a "session" in the UI. A "session" has a main loop, and it's handler
         to process user input query.
@@ -577,14 +600,14 @@ class UI(
             self.clear_query()
             self.print_query()
             self.print_items()
-            return self._run_session(_do_init=False)
+            return self.run_session(_do_init=False)
         except KeyboardInterrupt as e:
             self.move_to_end()
             raise e
         except Exception as e:
             if self.capture_error:
                 self.debug_loop(e)
-                return self._run_session(_do_init=False)
+                return self.run_session(_do_init=False)
             else:
                 raise e
 
@@ -593,7 +616,7 @@ class UI(
         Run the UI.
         """
         try:
-            self._run_session()
+            self.run_session()
         except KeyboardInterrupt:
             print("🔴 keyboard interrupt, exit.", end="")
         finally:

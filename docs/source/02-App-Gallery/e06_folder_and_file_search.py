@@ -29,6 +29,38 @@ import zelfred.api as zf
 
 
 @dataclasses.dataclass
+class OpenFileActionItem(zf.Item):
+    def enter_handler(self, ui: zf.UI):
+        """
+        Open file in default application.
+        """
+        zf.open_file(Path(self.arg))
+
+
+@dataclasses.dataclass
+class CopyFilePathActionItem(zf.Item):
+    def enter_handler(self, ui: zf.UI):
+        """
+        Copy file path.
+        """
+        print(
+            f"copied {self.arg!r} path to clipboard (not really copied, just for demo purpose)"
+        )
+
+
+@dataclasses.dataclass
+class CopyFileContentActionItem(zf.Item):
+    def enter_handler(self, ui: zf.UI):
+        """
+        Copy file content.
+        """
+        content = Path(self.arg).read_text()
+        print(
+            f"copied {self.arg!r} file content {content!r} to clipboard (not really copied, just for demo purpose)"
+        )
+
+
+@dataclasses.dataclass
 class FileItem(zf.Item):
     """
     Represent a file in the dropdown menu.
@@ -55,7 +87,19 @@ class FileItem(zf.Item):
         """
         Open file in default application.
         """
-        zf.open_file(Path(self.arg))
+        # define the new handler function for the sub query session
+        path = Path(self.arg)
+
+        def sub_handler(query: str, ui: zf.UI):
+            """
+            A partial function that using the given folder.
+            """
+            return handler_file_action(path, query, ui)
+
+        # run the sub session using the new handler
+        # user can tap 'F1' to exit the sub query session,
+        # and go back to the folder selection session.
+        ui.run_sub_session(handler=sub_handler, initial_query="")
 
 
 @dataclasses.dataclass
@@ -101,6 +145,46 @@ class FolderItem(zf.Item):
 
 
 dir_home = Path(__file__).absolute().parent.joinpath("home")
+
+
+def handler_file_action(path: Path, query: str, ui: zf.UI):
+    """
+    This is the handler for the nested sub query (sub query in sub query) session.
+
+    Given a path, you have to create a partial function that using the given
+     path. The partial function will become the final handler of the sub query.
+
+    This handler returns couple of action you can do with the file.
+    """
+    return [
+        OpenFileActionItem(
+            title="Open file",
+            subtitle=f"hit 'Enter' to open file",
+            uid="open-file",
+            autocomplete=path.name,  # allow user to tap 'Tab' to auto-complete
+            arg=str(
+                path
+            ),  # the argument of OpenFileActionItem will be used to open file
+        ),
+        CopyFilePathActionItem(
+            title="Copy file path",
+            subtitle=f"hit 'Enter' to copy file path",
+            uid="copy-file-path",
+            autocomplete=path.name,  # allow user to tap 'Tab' to auto-complete
+            arg=str(
+                path
+            ),  # the argument of OpenFileActionItem will be used to open file
+        ),
+        CopyFileContentActionItem(
+            title="Copy file content",
+            subtitle=f"hit 'Enter' to copy file content",
+            uid="copy-file-content",
+            autocomplete=path.name,  # allow user to tap 'Tab' to auto-complete
+            arg=str(
+                path
+            ),  # the argument of OpenFileActionItem will be used to open file
+        ),
+    ]
 
 
 def handler_file(folder: str, query: str, ui: zf.UI):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-todo: doc string here
+Zelfred project related Exceptions.
 """
 
 import typing as T
@@ -9,7 +9,7 @@ import typing as T
 
 class EndOfInputError(Exception):
     """
-    todo: doc string here
+    Raises to indicate the UI should exit.
     """
 
     def __init__(
@@ -25,7 +25,8 @@ class EndOfInputError(Exception):
 
 class JumpOutSessionError(Exception):
     """
-    todo: doc string here
+    Raises to indicate that the UI should quit the current session
+    (e.g. current handler) and jump out to the previous session (e.g. previous handler).
     """
     pass
 
@@ -35,7 +36,7 @@ JumpOutLoopError = JumpOutSessionError  # this is for backward compatibility
 
 class TerminalTooSmallError(SystemError):
     """
-    todo: doc string here
+    Raises to indicate that the terminal size is too small to render the UI.
     """
     pass
 
