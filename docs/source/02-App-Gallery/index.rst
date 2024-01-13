@@ -130,3 +130,37 @@ User the user input to search the username, allow user to tap "Ctrl A" to copy t
     .. literalinclude:: ./e05_password_book.py
        :language: python
        :linenos:
+
+
+Refresh Cache
+------------------------------------------------------------------------------
+:bdg-warning:`Difficulty: Medium`
+
+No matter what user entered, always return a random value between 1 and 100. And this value is based on cache that won't change while user is typing. However, we want to provide a way to refresh the value. User can type "!~" and then hit "ENTER" to refresh the value. When user hit ENTER, it automatically removes the "!~" part and recover the original query.
+
+**Demo**
+
+.. image:: https://asciinema.org/a/631197.svg
+    :target: https://asciinema.org/a/631197
+
+.. dropdown:: **Source Code**
+
+    .. literalinclude:: ./e08_refresh_cache.py
+       :language: python
+       :linenos:
+
+
+JSON Formatter
+------------------------------------------------------------------------------
+:bdg-success:`Difficulty: Easy`
+
+Copy JSON text to clipboard, then hit 'Enter' to dump the formatted JSON to
+``${HOME}/tmp/formatted.json`` and automatically open it.
+
+**Demo**
+
+.. dropdown:: **Source Code**
+
+    .. literalinclude:: ./e09_json_formatter.py
+       :language: python
+       :linenos:

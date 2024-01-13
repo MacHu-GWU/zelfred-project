@@ -15,6 +15,24 @@ x.y.z (Backlog)
 **Miscellaneous**
 
 
+0.3.1 (Backlog)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+**Features and Improvements**
+
+- Allow user to custom ``UIRender`` and use it in ``UI``.
+- Add ``open_url_or_print``, ``copy_or_print`` actions.
+
+**Minor Improvements**
+
+- Add the following sample app to app gallery:
+    - refresh_cache
+    - json_formatter
+
+**Bugfixes**
+
+**Miscellaneous**
+
+
 0.2.4 (2023-11-01)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 **Bugfixes**
