@@ -375,13 +375,14 @@ class UIProcessKeyPressedMixin:
             keyboard.CTRL_X: self.process_ctrl_x,
             # special
             keyboard.CTRL_C: self.process_ctrl_c,
+            keyboard.F1: self.process_f1,
+            # User defined (customizable) item action
             keyboard.ENTER: self.process_enter,
             keyboard.CTRL_A: self.process_ctrl_a,
             keyboard.CTRL_W: self.process_ctrl_w,
             keyboard.CTRL_U: self.process_ctrl_u,
             keyboard.CTRL_P: self.process_ctrl_p,
-            keyboard.F1: self.process_f1,
-            # user custom shortcut
+            # User defined UI keybinding:
             keyboard.CTRL_T: self.process_ctrl_t,
             keyboard.CTRL_G: self.process_ctrl_g,
             keyboard.CTRL_B: self.process_ctrl_b,

@@ -456,10 +456,13 @@ class UI(
     ):
         """
         Run a sub session with a new handler. User can tap "F1" to go back to the
-        previous session.
+        previous session. See :meth:`~zelfred.ui_process_key_pressed.UIProcessKeyPressedMixin.process_f1
+        and the ``except exc.JumpOutSessionError:`` part in :meth:`~zelfred.ui.UI.run_session`
+        to see how it works.
 
         :param handler: see :class:`UI`
         :param initial_query: the initial user input query in the sub session.
+            it is the start-up text in the user input line editor.
         """
         # replace the current handler with the new handler
         self.replace_handler(handler)

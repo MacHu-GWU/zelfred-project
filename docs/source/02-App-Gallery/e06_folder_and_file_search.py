@@ -128,6 +128,16 @@ class FolderItem(zf.Item):
     def enter_handler(self, ui: zf.UI):
         """
         Enter a sub query session.
+
+        .. note::
+
+            THIS IS A VERY GOOD EXAMPLE OF HOW TO ENTER A SUB QUERY SESSION.
+
+            your main UI loop has a handler, sub query session too. So you need
+            to define a new handler function for the sub query session, and then
+            use the ``ui.run_sub_session()`` method to enter the sub session.
+            You can also use ``initial_query`` argument to set the start-up
+            input query to display in the line editor.
         """
         # define the new handler function for the sub query session
         folder = self.arg

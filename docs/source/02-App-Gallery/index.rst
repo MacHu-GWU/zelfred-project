@@ -15,11 +15,11 @@ The user enters the length of the password, and the UI generates a few random pa
 .. image:: https://asciinema.org/a/617869.svg
     :target: https://asciinema.org/a/617869
 
-**Source Code**
+.. dropdown:: **Source Code**
 
-.. literalinclude:: ./e01_random_password_generator.py
-   :language: python
-   :linenos:
+    .. literalinclude:: ./e01_random_password_generator.py
+       :language: python
+       :linenos:
 
 
 Calculate File Checksum
@@ -33,11 +33,11 @@ The user enters (or paste) the absolute path of the file, and the UI generates a
 .. image:: https://asciinema.org/a/617871.svg
     :target: https://asciinema.org/a/617871
 
-**Source Code**
+.. dropdown:: **Source Code**
 
-.. literalinclude:: ./e02_calculate_file_checksum.py
-   :language: python
-   :linenos:
+    .. literalinclude:: ./e02_calculate_file_checksum.py
+       :language: python
+       :linenos:
 
 
 Select Item Using Fuzzy Match
@@ -51,11 +51,11 @@ Use the user input to sort a list of items by fuzzy match similarity. Allow user
 .. image:: https://asciinema.org/a/617874.svg
     :target: https://asciinema.org/a/617874
 
-**Source Code**
+.. dropdown:: **Source Code**
 
-.. literalinclude:: ./e03_select_item_using_fuzzy_match.py
-   :language: python
-   :linenos:
+    .. literalinclude:: ./e03_select_item_using_fuzzy_match.py
+       :language: python
+       :linenos:
 
 
 Google Search with Suggestion
@@ -69,11 +69,11 @@ The user types a query and receives a dropdown list of Google search suggestions
 .. image:: https://asciinema.org/a/616014.svg
     :target: https://asciinema.org/a/616014
 
-**Source Code**
+.. dropdown:: **Source Code**
 
-.. literalinclude:: ./e04_google_search_with_suggestion.py
-   :language: python
-   :linenos:
+    .. literalinclude:: ./e04_google_search_with_suggestion.py
+       :language: python
+       :linenos:
 
 
 Search Google Chrome Bookmark
@@ -87,12 +87,14 @@ User type query and return a dropdown list of matched Google Chrome bookmarks. U
 .. image:: https://asciinema.org/a/617801.svg
     :target: https://asciinema.org/a/617801
 
-**Source Code**
+.. dropdown:: **Source Code**
 
-.. literalinclude:: ./e05_search_google_chrome_bookmark.py
-   :language: python
-   :linenos:
+    .. literalinclude:: ./e05_search_google_chrome_bookmark.py
+       :language: python
+       :linenos:
 
+
+.. _app-gallery-folder-and-file-search:
 
 Folder and File Search
 ------------------------------------------------------------------------------
@@ -105,11 +107,11 @@ User can search folder in a root directory, and then tap "Enter" to enter a sub 
 .. image:: https://asciinema.org/a/616119.svg
     :target: https://asciinema.org/a/616119
 
-**Source Code**
+.. dropdown:: **Source Code**
 
-.. literalinclude:: ./e06_folder_and_file_search.py
-   :language: python
-   :linenos:
+    .. literalinclude:: ./e06_folder_and_file_search.py
+       :language: python
+       :linenos:
 
 
 Password Book App
@@ -123,8 +125,8 @@ User the user input to search the username, allow user to tap "Ctrl A" to copy t
 .. image:: https://asciinema.org/a/617807.svg
     :target: https://asciinema.org/a/617807
 
-**Source Code**
+.. dropdown:: **Source Code**
 
-.. literalinclude:: ./e05_password_book.py
-   :language: python
-   :linenos:
+    .. literalinclude:: ./e05_password_book.py
+       :language: python
+       :linenos:
