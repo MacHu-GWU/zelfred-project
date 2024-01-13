@@ -2,36 +2,75 @@ Maintainer Guide
 ==============================================================================
 
 
-
-
 Code Architecture Design
 ------------------------------------------------------------------------------
 
 
 User Input Line Editor
 ------------------------------------------------------------------------------
-:class:`LineEditor (zelfred.line_editor.LineEditor) <zelfred.line_editor.LineEditor>`
+:class:`LineEditor (zelfred.line_editor.LineEditor) <zelfred.line_editor.LineEditor>` 是一个单行用户输入文本框的实现. 它负责 UI app 的输入. 它本身不会 render UI, 它只是保存了 render 所需的全部数据. 这些数据包括:
+
+1. 用户已经输入的文本.
+2. 游标的位置.
+
+并且这个类还实现了很多用于模拟人类的键盘动作的行为, 例如输入一个字符, 按一下退格键, 按一下左右键等. 人类按下按键后, 内存中的数据就要对应地发生变化. 所以我们把这些变化用人类可读的方法封装了起来, 这样能大幅增加代码可读性.
 
 
 Dropdown Menu
 ------------------------------------------------------------------------------
-:class:`Dropdown (zelfred.dropdown.Dropdown) <zelfred.dropdown.Dropdown>`
+:class:`Dropdown (zelfred.dropdown.Dropdown) <zelfred.dropdown.Dropdown>` 是一个下拉列表的实现. 用于展示 UI app 的输出. 下拉列表本质是一堆有序的 item, 这里我们不展开说 item. 它本身不会 render UI, 它只是保存了 render 所需的全部数据. 这些数据包括:
+
+1. 所有的 item 的列表.
+2. 当前选中的 item 的索引.
+3. 当前游标, 也就是所选的 item 在 UI 中的索引. 因为 UI 不会展示所有的 item, 所以这个索引跟 #2 是不一样的.
+4. 最多显示多少个 item 的常数.
+5. 上下滚动时跳过多少个 item 的常数.
+
+类似 ``LineEditor`` 这个类也实现了很多用于模拟人类的键盘动作的行为. 例如上下键选择 item, 上下滚动等等.
 
 
 Item
 ------------------------------------------------------------------------------
-:class:`Item (zelfred.item.Item) <zelfred.item.Item>`
+:class:`Item (zelfred.item.Item) <zelfred.item.Item>` 是 ``Dropdown`` 中所展示的内容. 对于人类可见的部分有 title 和 subtitle, 以及是否被选中的状态. 对于人类不可见的有它的 arg (argument) 以及一个 variables 字典数据结构, 以及一些定义了当用户按下某些快捷键时 (例如 Enter, Ctrl + A) 所执行的动作. 可以说 Item 是用户交互中最重要的部分. 它用视觉化的方式展示了输出数据, 并且定义了交互行为.
+
+你可以通过继承这个类并实现这些方法来自定义用户和 item 交互的行为:
+
+- :meth:`~.zelfred.item.Item.enter_handler`
+- :meth:`~.zelfred.item.Item.post_enter_handler`
+- :meth:`~.zelfred.item.Item.ctrl_a_handler`
+- :meth:`~.zelfred.item.Item.post_ctrl_a_handler`
+- :meth:`~.zelfred.item.Item.ctrl_w_handler`
+- :meth:`~.zelfred.item.Item.post_ctrl_w_handler`
+- :meth:`~.zelfred.item.Item.ctrl_u_handler`
+- :meth:`~.zelfred.item.Item.post_ctrl_u_handler`
+- :meth:`~.zelfred.item.Item.ctrl_p_handler`
+- :meth:`~.zelfred.item.Item.post_ctrl_p_handler`
 
 
 Render Engine
 ------------------------------------------------------------------------------
-:class:`Render (zelfred.render.Render) <zelfred.render.UIRender>`, :class:`UIRender (zelfred.render.UIRender) <zelfred.render.UIRender>`
+:class:`Render (zelfred.render.Render) <zelfred.render.Render>` 是一个以行为单位的渲染引擎, 它能控制将字符串流打印到终端上, 并且对游标的位置进行管理. 而 :class:`UIRender (zelfred.render.UIRender) <zelfred.render.UIRender>` 则是继承了 ``Render`` 并且为 zelfred UI 的交互逻辑做了很多优化, 方便开发者对其进行编程.
+
+``UIRender`` 有这些跟 UI 交互逻辑相关的方法:
+
+- :meth:`~zelfred.render.UIRender.print_line_editor`
+- :meth:`~zelfred.render.UIRender.clear_line_editor`
+- :meth:`~zelfred.render.UIRender.update_line_editor`
+- :meth:`~zelfred.render.UIRender.process_title`
+- :meth:`~zelfred.render.UIRender.process_subtitle`
+- :meth:`~zelfred.render.UIRender.print_item`
+- :meth:`~zelfred.render.UIRender.print_dropdown`
+- :meth:`~zelfred.render.UIRender.clear_dropdown`
+- :meth:`~zelfred.render.UIRender.update_dropdown`
+- :meth:`~zelfred.render.UIRender.move_cursor_to_line_editor`
+- :meth:`~zelfred.render.UIRender.print_ui`
+- :meth:`~zelfred.render.UIRender.move_to_end`
+- :meth:`~zelfred.render.UIRender.clear_ui`
 
 
 Keystroke Event
 ------------------------------------------------------------------------------
 :meth:`UI.main_loop <zelfred.ui.UI.main_loop>`, :meth:`UI.process_input <zelfred.ui.UI.process_input>`, :meth:`UI.process_input <zelfred.ui.UI.process_key_pressed_input>`
-
 
 
 Shortcut Key
@@ -54,7 +93,4 @@ Shortcut Key
 
 如何实现按快捷键跳出 Sub Session
 ------------------------------------------------------------------------------
-:meth:`UIProcessKeyPressedMixin.process_f1 <zelfred.ui_process_key_pressed.UIProcessKeyPressedMixin.process_f1>`
-
-:class:`~zelfred.exc.JumpOutSessionError`
-
+当你按下 F1 按键时, 会调用 :meth:`UIProcessKeyPressedMixin.process_f1 <zelfred.ui_process_key_pressed.UIProcessKeyPressedMixin.process_f1>` 方法, 通过读源码可以看到它其实是 raise 了一个 :class:`~zelfred.exc.JumpOutSessionError`. 而抛异常这个动作其实还是在 :meth:`UI.run_session <zelfred.ui.UI.run_session>` 中的 ``main_loop()`` 中的. 通过读源码可以看到这个异常会被 ``try ... except ...`` 捕获, 并调用 :meth:`UI.jump_out_session_loop <zelfred.ui.UI.jump_out_session_loop>` 来处理. 通过读源码可以看到这个处理逻辑本质上是恢复了之前的 handler, 并且立刻用它来处理之前的 input query, 然后重新 render UI, 并且回到 :meth:`UI.run_session <zelfred.ui.UI.run_session>` 的逻辑中, 用 ``self.run_session(_do_init=False)`` 进入了一个新的 session. 由于 session 的本质是 handler, 它只是在内存中不是一个对象了, 但逻辑上跟你之前的 parent session 是一模一样的.
