@@ -41,6 +41,24 @@ def open_url(url: str):  # pragma: no cover
         subprocess.run(["open", url])
 
 
+def open_url_or_print(url: str):  # pragma: no cover
+    """
+    Open a URL in the default browser. If it cannot open the browser, for example,
+    if it is in an SSH remote shell, it will print the URL to the terminal.
+    """
+    try:
+        open_url(url)
+    except FileNotFoundError as e:
+        if "start" in str(e) or "open" in str(e):
+            print(
+                f"❗ Your system doesn't support open url in browser to clipboard, "
+                f"we print it here so you can copy manually."
+            )
+            print(url)
+        else:
+            raise e
+
+
 def open_file(path: Path):  # pragma: no cover
     """
     Open a file in the default application.
@@ -63,6 +81,22 @@ def copy_text(text: str):  # pragma: no cover
             "You need to do 'pip install pyperclip' first to copy text to clipboard."
         )
     pyperclip.copy(text)
+
+
+def copy_or_print(text: str):  # pragma: no cover
+    """
+    Copy text to clipboard. If your system doesn't support copy to clipboard,
+    for example, if it is in an SSH remote shell, it will print the text
+    to the terminal.
+    """
+    try:
+        copy_text(text)
+    except pyperclip.PyperclipException:
+        print(
+            f"❗ Your system doesn't support copy to clipboard, "
+            f"we print it here so you can copy manually."
+        )
+        print(text)
 
 
 def send_mac_notification(
