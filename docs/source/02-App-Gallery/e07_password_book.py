@@ -33,9 +33,6 @@ class PasswordItem(zf.Item):
     """
     Represent a password item in the dropdown menu.
     """
-
-    copied: bool = dataclasses.field(default=False)
-
     def ctrl_a_handler(self, ui: zf.UI):
         """
         Copy the content to clipboard.

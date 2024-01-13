@@ -19,7 +19,7 @@ from .constants import SHOW_ITEMS_LIMIT, SCROLL_SPEED
 from .item import T_ITEM, Item
 from .line_editor import LineEditor
 from .dropdown import Dropdown
-from .render import UIRender
+from .render import UIRender, T_UI_RENDER
 from .debug import debugger
 from .ui_process_key_pressed import UIProcessKeyPressedMixin
 
@@ -117,6 +117,7 @@ class UI(
         show_items_limit: int = SHOW_ITEMS_LIMIT,
         scroll_speed: int = SCROLL_SPEED,
         terminal: T.Optional[Terminal] = None,
+        render_class: T.Type[T_UI_RENDER] = UIRender,
     ):
         # -------------------- input arguments
         self.handler: T_HANDLER = handler
@@ -131,7 +132,7 @@ class UI(
             self.terminal = Terminal()
         else:
             self.terminal = terminal
-        self.render: UIRender = UIRender(terminal=self.terminal)
+        self.render: T_UI_RENDER = render_class(terminal=self.terminal)
         self.event_generator = events.KeyEventGenerator()
         self._process_input: T.Callable
         flag = sum(
@@ -518,7 +519,8 @@ class UI(
 
     def initialize_loop(self):
         """
-
+        Process the first loop of a session. This loop starts with a hello message,
+        and then run the handler, then render the UI.
         """
         debugger.log("=== initialize loop start ===")
         self.print_query()  # show initial query, mostly it is empty
@@ -533,7 +535,8 @@ class UI(
 
     def main_loop(self, _ith: int = 0):
         """
-
+        This is the main loop of the UI. It starts with waiting for user input,
+        and the run the handler, then render the UI.
         """
         while True:
             _ith += 1
@@ -547,6 +550,26 @@ class UI(
             self.print_query()
             self.print_items()
             debugger.log(f"=== {_ith}th main loop end ===")
+
+    def jump_out_session_loop(self):
+        """
+        This loop is executed after a :class:`~zelfred.exc.JumpOutSessionError` is raised.
+
+        It pops up the current session from the queue and use the handler
+        of previous session to run handler, and then render the UI.
+        """
+        if self._handler_queue:
+            self.handler = self._handler_queue.pop()
+        if self._line_editor_input_queue:
+            self.line_editor.clear_line()
+            self.line_editor.enter_text(self._line_editor_input_queue.pop())
+
+        self.run_handler()
+        self.move_to_end()
+        self.clear_items()
+        self.clear_query()
+        self.print_query()
+        self.print_items()
 
     def debug_loop(self, e: Exception):
         """
@@ -591,18 +614,7 @@ class UI(
         except exc.EndOfInputError as e:
             return e.selection
         except exc.JumpOutSessionError:
-            if self._handler_queue:
-                self.handler = self._handler_queue.pop()
-            if self._line_editor_input_queue:
-                self.line_editor.clear_line()
-                self.line_editor.enter_text(self._line_editor_input_queue.pop())
-
-            self.run_handler()
-            self.move_to_end()
-            self.clear_items()
-            self.clear_query()
-            self.print_query()
-            self.print_items()
+            self.jump_out_session_loop()
             return self.run_session(_do_init=False)
         except KeyboardInterrupt as e:
             self.move_to_end()
@@ -624,3 +636,6 @@ class UI(
             print("🔴 keyboard interrupt, exit.", end="")
         finally:
             print("")
+
+
+T_UI = T.TypeVar("T_UI", bound=UI)

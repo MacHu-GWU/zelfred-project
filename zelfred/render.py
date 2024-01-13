@@ -144,6 +144,112 @@ class Render:
     def height(self):
         return self.terminal.width or 24
 
+    # --------------------------------------------------------------------------
+    # Format important text
+    # --------------------------------------------------------------------------
+    def format_shortcut(self, key: str) -> str:
+        """
+        Add terminal color to a zelfred keyboard shortcut key.
+
+        The default color is magenta. You can override this method to use
+        other colors.
+
+        Example:
+
+        Tap :magenta:`Enter` to open url
+        """
+        return f"{self.terminal.magenta}{key}{self.terminal.normal}"
+
+    @property
+    def TAB(self) -> str:
+        """
+        colored text :magenta:`Tab`
+        """
+        return self.format_shortcut("Tab")
+
+    @property
+    def ENTER(self) -> str:
+        """
+        colored text :magenta:`Enter`
+        """
+        return self.format_shortcut("Enter")
+
+    @property
+    def CTRL_A(self) -> str:
+        """
+        colored text :magenta:`Ctrl A`
+        """
+        return self.format_shortcut("Ctrl A")
+
+    @property
+    def CTRL_W(self) -> str:
+        """
+        colored text :magenta:`Ctrl W`
+        """
+        return self.format_shortcut("Ctrl W")
+
+    @property
+    def CTRL_U(self) -> str:
+        """
+        colored text :magenta:`Ctrl U`
+        """
+        return self.format_shortcut("Ctrl U")
+
+    @property
+    def CTRL_P(self) -> str:
+        """
+        colored text :magenta:`Ctrl P`
+        """
+        return self.format_shortcut("Ctrl P")
+
+    @property
+    def F1(self) -> str:
+        """
+        colored text :magenta:`F1`
+        """
+        return self.format_shortcut("F1")
+
+    def format_highlight(self, text: str) -> str:
+        """
+        Add terminal color to text you want to highlight.
+
+        The default color is magenta. You can override this method to use
+        other colors.
+
+        Example:
+
+        this is a very :cyan:`Important message`!
+        """
+        return f"{self.terminal.cyan}{text}{self.terminal.normal}"
+
+    def format_key(self, key: str) -> str:
+        """
+        Add terminal color to key in a key value pair.
+
+        The default color is cyan. You can override this method to use
+        other colors.
+        """
+        return f"{self.terminal.cyan}{key}{self.terminal.normal}"
+
+    def format_value(self, value: str) -> str:
+        """
+        Add terminal color to value in a key value pair.
+
+        The default color is yellow. You can override this method to use
+        other colors.
+        """
+        return f"{self.terminal.yellow}{str(value)}{self.terminal.normal}"
+
+    def format_key_value(self, key: str, value: str) -> str:
+        """
+        Add terminal color to a key value pair.
+
+        Example:
+
+        tag :cyan:`environment` = :yellow:`production`
+        """
+        return f"{self.format_key(key)} = {self.format_value(value)}"
+
 
 @dataclasses.dataclass
 class UIRender(Render):
@@ -524,3 +630,6 @@ class UIRender(Render):
         """
         self.clear_dropdown()
         self.clear_line_editor()
+
+
+T_UI_RENDER = T.TypeVar("T_UI_RENDER", bound=UIRender)
