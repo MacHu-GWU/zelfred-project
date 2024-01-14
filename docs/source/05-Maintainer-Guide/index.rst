@@ -45,7 +45,7 @@ Code Architecture Design
 - :class:`LineEditor (zelfred.line_editor.LineEditor) <zelfred.line_editor.LineEditor>`: 负责维护用户输入文本框中的数据.
 - :class:`Dropdown (zelfred.dropdown.Dropdown) <zelfred.dropdown.Dropdown>`: 负责维护下拉列表中的数据.
 - :class:`Item (zelfred.item.Item) <zelfred.item.Item>`: 负责维护下拉列表中的每一条数据.
-- :attr:`UI.process_input <zelfred.ui.UI.handler>`: 则是一个普通的 Python 函数, 负责处理 ``LineEditor`` 中的数据, 并将返回需要被渲染的 ``Items``.
+- :attr:`UI.process_input <zelfred.ui.UI.handler>`: 则是一个普通的 Python 函数, 负责处理 :class:`~zelfred.line_editor.LineEditor` 中的数据, 并将返回需要被渲染的 :class:`~zelfred.item.Item`.
 
 以上的模块都是内存中的数据. 那我们要怎么将其变成用户可见的 UI 呢? 答案很直接, 我们需要一个 :class:`Render (zelfred.render.Render) <zelfred.render.Render>` 渲染引擎, 将内存中的数据渲染成用户可见的 UI.
 
