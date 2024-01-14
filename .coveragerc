@@ -5,6 +5,7 @@ omit =
     zelfred/docs/*
     zelfred/tests/*
     zelfred/vendor/*
+    zelfred/gallery/*
     zelfred/_version.py
     zelfred/events.py
     zelfred/paths.py
