@@ -51,7 +51,7 @@ Code Architecture Design
 
 好了, 现在我们已经完成了对 UI 的数据建模. 那么用户要如何和这个 UI 交互呢?
 
-因为这是一个纯键盘的应用, 所以用户的输入设备只有键盘, 于是我们需要一个能捕获用户键盘输入的模块. 这个模块在本项目中是 :meth:`zelfred.events.KeyEventGenerator.next`. 当用户按下键盘时, 这个方法就会获得用户的输入, 然后根据这个输入对 ``LineEditor``, ``Dropdown`` 中的内存数据进行更新, 接下来再在 ``Render`` 中渲染出新的 UI. 而这个流程就叫做 event loop, 由 :meth:`UI.main_loop <zelfred.ui.UI.main_loop>` 负责.
+因为这是一个纯键盘的应用, 所以用户的输入设备只有键盘, 于是我们需要一个能捕获用户键盘输入的模块. 这个模块在本项目中是 :meth:`zelfred.events.KeyEventGenerator.next`. 当用户按下键盘时, 这个方法就会获得用户的输入, 然后根据这个输入对 :class:`~zelfred.line_editor.LineEditor`, :class:`~zelfred.dropdown.Dropdown` 中的内存数据进行更新, 接下来再在 :class:`~zelfred.render.Render` 中渲染出新的 UI. 而这个流程就叫做 event loop, 由 :meth:`UI.main_loop <zelfred.ui.UI.main_loop>` 负责.
 
 有一些用户键盘输入是跟当前选中的 Item 相关, 而不需要重新渲染 UI 的, 而这些键盘输入则会调用 ``Item`` 中的类似于 :meth:`~.zelfred.item.Item.enter_handler` 这样的方法. 例如你想要打开浏览器, 则在这些方法中调用 ``subprocess.run(["open", "https://..."])`` 即可.
 
@@ -65,7 +65,7 @@ User Input Line Editor
 1. 用户已经输入的文本.
 2. 游标的位置.
 
-并且这个类还实现了很多用于模拟人类的键盘动作的行为, 例如输入一个字符 :method:`~zelfred.line_editor.LineEditor.press_key`, 按一下退格键 :method:`~zelfred.line_editor.LineEditor.press_backspace`, 按一下左右键 :method:`~zelfred.line_editor.LineEditor.press_left` 等. 人类按下按键后, 内存中的数据就要对应地发生变化. 所以我们把这些变化用人类可读的方法封装了起来, 这样能大幅增加代码可读性.
+并且这个类还实现了很多用于模拟人类的键盘动作的行为, 例如输入一个字符 :meth:`~zelfred.line_editor.LineEditor.press_key`, 按一下退格键 :meth:`~zelfred.line_editor.LineEditor.press_backspace`, 按一下左右键 :meth:`~zelfred.line_editor.LineEditor.press_left` 等. 人类按下按键后, 内存中的数据就要对应地发生变化. 所以我们把这些变化用人类可读的方法封装了起来, 这样能大幅增加代码可读性.
 
 
 Dropdown Menu
@@ -78,7 +78,7 @@ Dropdown Menu
 4. 最多显示多少个 item 的常数.
 5. 上下滚动时跳过多少个 item 的常数.
 
-类似 ``LineEditor`` 这个类也实现了很多用于模拟人类的键盘动作的行为. 例如上下键选择 item :meth:`~zelfred.dropdown.Dropdown.press_down`, 上下滚动 :meth:`~zelfred.dropdown.Dropdown.scroll_down`等等.
+类似 ``LineEditor`` 这个类也实现了很多用于模拟人类的键盘动作的行为. 例如上下键选择 item :meth:`~zelfred.dropdown.Dropdown.press_down`, 上下滚动 :meth:`~zelfred.dropdown.Dropdown.scroll_down` 等等.
 
 
 Item
@@ -129,7 +129,7 @@ Keystroke Event
 
 Shortcut Key
 ------------------------------------------------------------------------------
-快捷键和用户输入的 key 本质上都是一样的. :class:`~zelfred.ui_process_key_pressed.py.UIProcessKeyPressedMixin` 类中有很多方法, 枚举了对应每个快捷键 (例如 Ctrl + R / Ctrl + F 对 dropdown menu 的上下滚动) 的处理逻辑. 然后用 :meth:`~zelfred.ui_process_key_pressed.py.UIProcessKeyPressedMixin._create_key_processor_mapper` 把 key 的字符串和这些方法对应起来. 如果这个 key 在 mapper 中没有定义, 则默认认为是用户打字输入 query, 这在 :meth:`~zelfred.ui_process_key_pressed.py.UIProcessKeyPressedMixin._process_key_pressed_input` 方法的源码中可以看得很清楚.
+快捷键和用户输入的 key 本质上都是一样的. :class:`~zelfred.ui_process_key_pressed.UIProcessKeyPressedMixin` 类中有很多方法, 枚举了对应每个快捷键 (例如 Ctrl + R / Ctrl + F 对 dropdown menu 的上下滚动) 的处理逻辑. 然后用 :meth:`~zelfred.ui_process_key_pressed.UIProcessKeyPressedMixin._create_key_processor_mapper` 把 key 的字符串和这些方法对应起来. 如果这个 key 在 mapper 中没有定义, 则默认认为是用户打字输入 query, 这在 :meth:`~zelfred.ui_process_key_pressed.UIProcessKeyPressedMixin._process_key_pressed_input` 方法的源码中可以看得很清楚.
 
 
 默认选中 Item 按下 Item Action 快捷键后会退出 App
@@ -141,7 +141,7 @@ Shortcut Key
 ------------------------------------------------------------------------------
 你可以先参考上一节了解按下 Item Action 快捷键后到底发生了什么.
 
-如果你要将其设为按下 Item Action 快捷键后不退出, 你在你的自定义 handler 返回的 item 类中 override ``post_enter_handler`` 方法, 把它设为 ``pass``, 什么都不做即可. 那么按下 Enter 之后就会进入下一个循环 (等待用户输入下一个字符)
+如果你要将其设为按下 Item Action 快捷键后不退出, 你在你的自定义 handler 返回的 item 类中 override :meth:`Item.enter_handler <zelfred.item.Item.post_enter_handler>` 方法, 把它设为 ``pass``, 什么都不做即可. 那么按下 Enter 之后就会进入下一个循环 (等待用户输入下一个字符)
 
 
 如何实现按进入 sub session
@@ -150,9 +150,9 @@ Shortcut Key
 
 其中 :meth:`UI.main_loop <zelfred.ui.UI.main_loop>` 这个函数在大多数情况下是用户在输入框每按下一次就走一遍循环. 其中第一步 :meth:`UI.process_input <zelfred.ui.UI.process_input>` 函数会处理用户的键盘输入. 这个函数在底层根据输入的 key 然后到这个 :class:`~zelfred.ui_process_key_pressed.UIProcessKeyPressedMixin` 类里去找对应的函数. 这个函数一般是根据选定的 :class:`~zelfred.item.Item`, 去运行 item 中的 user defined item action 方法. 例如 :meth:`Item.enter_handler <zelfred.item.Item.enter_handler>`, :meth:`Item.ctrl_a_handler <zelfred.item.Item.ctrl_a_handler>` 等. 这些方法里你就可以做任何事情, 例如打开浏览器, 复制到剪贴板, 打开文件等. 我们拿 :meth:`~zelfred.ui_process_key_pressed.UIProcessKeyPressedMixin.process_enter` 的源码为例看, 它的默认行为会找到 selected item 并运行 :meth:`Item.enter_handler <zelfred.item.Item.enter_handler>` 方法.
 
-所以进入 sub session 的关键是修改 ``Item.enter_handler`` 方法. 这里我们有一个例子 :ref:`app-gallery-folder-and-file-search`. 请仔细阅读 ``FolderItem.enter_handler`` 中的注释理解我们如何创建一个为 sub session 服务的 handler 函数, 以及如何进入 sub session 并设定初始的 query input.
+所以进入 sub session 的关键是修改 :meth:`Item.enter_handler <zelfred.item.Item.enter_handler>` 方法. 这里我们有一个例子 :ref:`app-gallery-folder-and-file-search`. 请仔细阅读 :meth:`zelfred.gallery.e06_folder_and_file_search.FolderItem.enter_handler` 中的注释理解我们如何创建一个为 sub session 服务的 handler 函数, 以及如何进入 sub session 并设定初始的 query input.
 
 
 如何实现按快捷键跳出 Sub Session
 ------------------------------------------------------------------------------
-当你按下 F1 按键时, 会调用 :meth:`UIProcessKeyPressedMixin.process_f1 <zelfred.ui_process_key_pressed.UIProcessKeyPressedMixin.process_f1>` 方法, 通过读源码可以看到它其实是 raise 了一个 :class:`~zelfred.exc.JumpOutSessionError`. 而抛异常这个动作其实还是在 :meth:`UI.run_session <zelfred.ui.UI.run_session>` 中的 ``main_loop()`` 中的. 通过读源码可以看到这个异常会被 ``try ... except ...`` 捕获, 并调用 :meth:`UI.jump_out_session_loop <zelfred.ui.UI.jump_out_session_loop>` 来处理. 通过读源码可以看到这个处理逻辑本质上是恢复了之前的 handler, 并且立刻用它来处理之前的 input query, 然后重新 render UI, 并且回到 :meth:`UI.run_session <zelfred.ui.UI.run_session>` 的逻辑中, 用 ``self.run_session(_do_init=False)`` 进入了一个新的 session. 由于 session 的本质是 handler, 它只是在内存中不是一个对象了, 但逻辑上跟你之前的 parent session 是一模一样的.
+当你按下 F1 按键时, 会调用 :meth:`UIProcessKeyPressedMixin.process_f1 <zelfred.ui_process_key_pressed.UIProcessKeyPressedMixin.process_f1>` 方法, 通过读源码可以看到它其实是 raise 了一个 :class:`~zelfred.exc.JumpOutSessionError`. 而抛异常这个动作其实还是在 :meth:`UI.run_session <zelfred.ui.UI.run_session>` 中的 :meth:`UI.main_loop <zelfred.ui.UI.main_loop>` 中的. 通过读源码可以看到这个异常会被 ``try ... except ...`` 捕获, 并调用 :meth:`UI.jump_out_session_loop <zelfred.ui.UI.jump_out_session_loop>` 来处理. 通过读源码可以看到这个处理逻辑本质上是恢复了之前的 handler, 并且立刻用它来处理之前的 input query, 然后重新 render UI, 并且回到 :meth:`UI.run_session <zelfred.ui.UI.run_session>` 的逻辑中, 用 ``self.run_session(_do_init=False)`` 进入了一个新的 session. 由于 session 的本质是 handler, 它只是在内存中不是一个对象了, 但逻辑上跟你之前的 parent session 是一模一样的.
