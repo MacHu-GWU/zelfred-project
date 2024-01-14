@@ -19,6 +19,6 @@ sub packages and modules
     e07_password_book <e07_password_book>
     e08_refresh_cache_v1 <e08_refresh_cache_v1>
     e09_refresh_cache_v2 <e09_refresh_cache_v2>
-    e09_refresh_cache_v3 <e09_refresh_cache_v3>
-    e10_json_formatter <e10_json_formatter>
+    e10_refresh_cache_v3 <e10_refresh_cache_v3>
+    e11_json_formatter <e11_json_formatter>
     

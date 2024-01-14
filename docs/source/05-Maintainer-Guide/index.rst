@@ -134,12 +134,14 @@ Shortcut Key
 
 默认选中 Item 按下 Item Action 快捷键后会退出 App
 ------------------------------------------------------------------------------
-以 Enter 键微粒, 按下 Enter 之后会调用 :meth:`Item.enter_handler <zelfred.item.Item.enter_handler>` 和 :meth:`Item.enter_handler <zelfred.item.Item.post_enter_handler>`, 其中 :meth:`Item.enter_handler <zelfred.item.Item.post_enter_handler>` 默认会抛出 :class:`~zelfred.exc.EndOfInputError` 异常, 而这个异常会在 App 的入口函数 :meth:`UI.run <zelfred.ui.UI.run>` 中被 ``try ... except ...`` 捕获并打印异常信息并结束程序.
+当你按下任何跟 Item Action 相关的快捷键 (例如 Enter, Ctrl + A 等等, 这里我们以 Enter 为例), 会调用相关的方法, 例如 :meth:`~zelfred.ui_process_key_pressed.UIProcessKeyPressedMixin.process_enter` 这个. 而观察这个方法的源码可知它会依次运行 :meth:`Item.enter_handler <zelfred.item.Item.enter_handler>` 来处理 Item Action 对应的逻辑, 和 :meth:`Item.post_enter_handler <zelfred.item.Item.post_enter_handler>` 方法来决定下一步应该做什么. 其中 :meth:`Item.enter_handler <zelfred.item.Item.post_enter_handler>` 默认会抛出 :class:`~zelfred.exc.EndOfInputError` 异常, 而这个异常会在 App 的入口函数 :meth:`UI.run <zelfred.ui.UI.run>` 中被 ``try ... except ...`` 捕获并打印异常信息并结束程序.
 
 
 如何实现选中 Item 按下 Item Action 快键键后不退出 App
 ------------------------------------------------------------------------------
-当你按下任何跟 Item Action 相关的快捷键 (例如 Enter, Ctrl + A 等等), 会调用相关的方法, 例如 :meth:`~zelfred.ui_process_key_pressed.UIProcessKeyPressedMixin.process_enter` 这个. 而观察这个方法会依次运行 :meth:`Item.enter_handler <zelfred.item.Item.enter_handler>` 和 :meth:`Item.enter_handler <zelfred.item.Item.post_enter_handler>` 方法. 默认情况下 ``post_enter_handler`` 会抛出 ``EndOfInputError`` 异常. 如果你要将其设为按下 Item Action 快捷键后不退出, 你在你的自定义 handler 返回的 item 类中 override ``post_enter_handler`` 方法, 把它设为 ``pass``, 什么都不做即可. 那么按下 Enter 之后就会进入下一个循环 (等待用户输入下一个字符)
+你可以先参考上一节了解按下 Item Action 快捷键后到底发生了什么.
+
+如果你要将其设为按下 Item Action 快捷键后不退出, 你在你的自定义 handler 返回的 item 类中 override ``post_enter_handler`` 方法, 把它设为 ``pass``, 什么都不做即可. 那么按下 Enter 之后就会进入下一个循环 (等待用户输入下一个字符)
 
 
 如何实现按进入 sub session
