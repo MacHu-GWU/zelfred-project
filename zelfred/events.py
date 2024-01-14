@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+"""
+Keyboard events.
+"""
+
 import typing as T
 import readchar
 
@@ -18,6 +22,9 @@ class RepaintEvent(Event):
 
 
 class KeyEventGenerator:
+    """
+    Capture keyboard event.
+    """
     def __init__(
         self,
         key_generator: T.Optional[T.Callable[[], str]] = None,
@@ -25,4 +32,7 @@ class KeyEventGenerator:
         self._key_generator = key_generator or readchar.readkey
 
     def next(self) -> KeyPressedEvent:
+        """
+        Return the next key pressed event.
+        """
         return KeyPressedEvent(value=self._key_generator())

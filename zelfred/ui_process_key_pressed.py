@@ -351,6 +351,10 @@ class UIProcessKeyPressedMixin:
         self.wait_next_user_input()
 
     def _create_key_processor_mapper(self):
+        """
+        Create a key processor mapper. So we can map the key to the corresponding
+        processor.
+        """
         self._key_processor_mapper = {
             # dropdown menu
             keyboard.UP: self.process_up,

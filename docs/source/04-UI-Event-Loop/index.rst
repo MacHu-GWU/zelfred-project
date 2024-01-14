@@ -19,54 +19,31 @@ The flow chart below shows the UI event loop.
     :file: ./ui-event-loop.drawio.html
 
 
-Print Query
+Process Input
 ------------------------------------------------------------------------------
-Print the ``(Query): {user_query}`` line
+Process the keyboard event, update the in-memory data of :class:`~zelfred.line_editor.LineEditor` and :class:`~zelfred.dropdown.Dropdown`. So the following ``print_query`` and ``print_items`` can render the UI correctly.
 
-Before (nothing in the terminal)::
+.. seealso::
 
-    # NOTHING HERE
-
-After. The ``beau`` is the user input query::
-
-    (Query): beau
+    :meth:`~zelfred.ui.UI.process_input`
 
 
 Run Handler
 ------------------------------------------------------------------------------
-Run the handler function.
+Run the handler function. Figure out the corresponding items about to be rendered in the UI.
 
+.. seealso::
 
-Print Items
-------------------------------------------------------------------------------
-Print items in the dropdown menu.
-
-Before::
-
-    (Query): beau
-
-After::
-
-    (Query): beau
-    [x] Beautiful is better than ugly.
-          subtitle 01: https://www.google.com
-    [ ] Explicit is better than implicit.
-          subtitle 02: https://www.google.com
-    [ ] Simple is better than complex.
-          subtitle 03: https://www.google.com
-    [ ] Complex is better than complicated.
-          subtitle 04: https://www.google.com
-    [ ] Flat is better than nested.
-          subtitle 05: https://www.google.com
+    :meth:`~zelfred.ui.UI.run_handler`
 
 
 Move to the End
 ------------------------------------------------------------------------------
-Move the cursor to the next line of the end of the dropdown menu.
+Move the cursor to the next line of the end of the dropdown menu. Prepare to re-render (clear existing and render new) the UI.
 
 Before, ``|`` is the cursor in the user input dialog::
 
-    (Query): beau|
+    (Query): beau| # <-- cursor is here
     [x] Beautiful is better than ugly.
           subtitle 01: https://www.google.com
     [ ] Explicit is better than implicit.
@@ -91,7 +68,11 @@ After, the cursor is at begin of the line below the last item::
           subtitle 04: https://www.google.com
     [ ] Flat is better than nested.
           subtitle 05: https://www.google.com
-    |
+    | # <-- cursor is here
+
+.. seealso::
+
+    :meth:`~zelfred.ui.UI.move_to_end`
 
 
 Clear Items
@@ -111,12 +92,16 @@ Before::
           subtitle 04: https://www.google.com
     [ ] Flat is better than nested.
           subtitle 05: https://www.google.com
-    |
+    | # <-- cursor is here
 
 After::
 
     (Query): beau
-    |
+    | # <-- cursor is here
+
+.. seealso::
+
+    :meth:`~zelfred.ui.UI.clear_items`
 
 
 Clear Query
@@ -125,7 +110,7 @@ Clear the ``(Query): {user_query}`` line.
 
 Before::
 
-    (Query): beau|
+    (Query): beau| # <-- cursor is here
     [x] Beautiful is better than ugly.
           subtitle 01: https://www.google.com
     [ ] Explicit is better than implicit.
@@ -140,7 +125,7 @@ Before::
 
 After::
 
-    |
+    | # <-- cursor is here
     [x] Beautiful is better than ugly.
           subtitle 01: https://www.google.com
     [ ] Explicit is better than implicit.
@@ -152,7 +137,50 @@ After::
     [ ] Flat is better than nested.
           subtitle 05: https://www.google.com
 
+.. seealso::
 
-Process Input
+    :meth:`~zelfred.ui.UI.clear_query`
+
+
+Print Query
 ------------------------------------------------------------------------------
-Process the keyboard event, update the :class:`~zelfred.line_editor.LineEditor` and :class:`~zelfred.dropdown.Dropdown` objects. So the following ``print_query`` and ``print_items`` can render the UI correctly.
+Print the ``(Query): {user_query}`` line.
+
+Before (nothing in the terminal)::
+
+    # NOTHING HERE
+
+After. The ``beau`` is the user input query::
+
+    (Query): beau
+
+.. seealso::
+
+    :meth:`~zelfred.ui.UI.print_query`
+
+
+Print Items
+------------------------------------------------------------------------------
+Print items in the dropdown menu.
+
+Before::
+
+    (Query): beau
+
+After::
+
+    (Query): beau
+    [x] Beautiful is better than ugly.
+          subtitle 01: https://www.google.com
+    [ ] Explicit is better than implicit.
+          subtitle 02: https://www.google.com
+    [ ] Simple is better than complex.
+          subtitle 03: https://www.google.com
+    [ ] Complex is better than complicated.
+          subtitle 04: https://www.google.com
+    [ ] Flat is better than nested.
+          subtitle 05: https://www.google.com
+
+.. seealso::
+
+    :meth:`~zelfred.ui.UI.print_items`

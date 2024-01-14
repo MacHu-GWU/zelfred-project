@@ -4,6 +4,58 @@ Maintainer Guide
 
 Code Architecture Design
 ------------------------------------------------------------------------------
+.. note::
+
+    本节简略的介绍了代码架构设计, 主要是帮助理解, 很多细节特意略过了, 请以后续的详细介绍为准.
+
+我们从结果倒推, 先看看我们想要呈现的 UI 效果以及互动逻辑是怎样的, 代码架构设计也就会呼之欲出了.
+
+我们以随机密码生成器为例. 用户输入一个数字, 然后生成多个指定长度的密码供用户选择, 选定之后按回车即复制到剪贴板:
+
+.. code-block::
+
+    (Query):
+    [x] Enter the length of the password ...
+          for example: 12
+
+.. code-block::
+
+    (Query): 2
+    [x] We don't support password length less than 10.
+          please enter a number greater than 10!
+
+.. code-block::
+
+    (Query): 12
+    [x] mW@JC#JTe6Fw
+          tap Enter to copy this password to clipboard
+    [ ] j@vd9CF_sVV8
+          tap Enter to copy this password to clipboard
+    [ ] p4+z9zEYV6VQ
+          tap Enter to copy this password to clipboard
+    [ ] Y@D7*bBP735n
+          tap Enter to copy this password to clipboard
+    [ ] M$sh%68qZ*F3
+          tap Enter to copy this password to clipboard
+
+这个 UI 本质上由两部分组成. 第一部分是第一行用户的输入. 用户可以像在单行文本框中那样输入任何字符. 第二部分是下拉列表. 列表中会有很多的条目供用户阅读并选择. 而这个列表的内容由用户输入的字符, 以及一些用户不可见的全局配置 (例如密码中的特殊字符集) 共同决定的.
+
+所以对于 UI 而言, 我们需要三个模块:
+
+- :class:`LineEditor (zelfred.line_editor.LineEditor) <zelfred.line_editor.LineEditor>`: 负责维护用户输入文本框中的数据.
+- :class:`Dropdown (zelfred.dropdown.Dropdown) <zelfred.dropdown.Dropdown>`: 负责维护下拉列表中的数据.
+- :class:`Item (zelfred.item.Item) <zelfred.item.Item>`: 负责维护下拉列表中的每一条数据.
+- :attr:`UI.process_input <zelfred.ui.UI.handler>`: 则是一个普通的 Python 函数, 负责处理 ``LineEditor`` 中的数据, 并将返回需要被渲染的 ``Items``.
+
+以上的模块都是内存中的数据. 那我们要怎么将其变成用户可见的 UI 呢? 答案很直接, 我们需要一个 :class:`Render (zelfred.render.Render) <zelfred.render.Render>` 渲染引擎, 将内存中的数据渲染成用户可见的 UI.
+
+好了, 现在我们已经完成了对 UI 的数据建模. 那么用户要如何和这个 UI 交互呢?
+
+因为这是一个纯键盘的应用, 所以用户的输入设备只有键盘, 于是我们需要一个能捕获用户键盘输入的模块. 这个模块在本项目中是 :meth:`zelfred.events.KeyEventGenerator.next`. 当用户按下键盘时, 这个方法就会获得用户的输入, 然后根据这个输入对 ``LineEditor``, ``Dropdown`` 中的内存数据进行更新, 接下来再在 ``Render`` 中渲染出新的 UI. 而这个流程就叫做 event loop, 由 :meth:`UI.main_loop <zelfred.ui.UI.main_loop>` 负责.
+
+有一些用户键盘输入是跟当前选中的 Item 相关, 而不需要重新渲染 UI 的, 而这些键盘输入则会调用 ``Item`` 中的类似于 :meth:`~.zelfred.item.Item.enter_handler` 这样的方法. 例如你想要打开浏览器, 则在这些方法中调用 ``subprocess.run(["open", "https://..."])`` 即可.
+
+下面我们针对每个模块进行详细的介绍.
 
 
 User Input Line Editor
@@ -13,7 +65,7 @@ User Input Line Editor
 1. 用户已经输入的文本.
 2. 游标的位置.
 
-并且这个类还实现了很多用于模拟人类的键盘动作的行为, 例如输入一个字符, 按一下退格键, 按一下左右键等. 人类按下按键后, 内存中的数据就要对应地发生变化. 所以我们把这些变化用人类可读的方法封装了起来, 这样能大幅增加代码可读性.
+并且这个类还实现了很多用于模拟人类的键盘动作的行为, 例如输入一个字符 :method:`~zelfred.line_editor.LineEditor.press_key`, 按一下退格键 :method:`~zelfred.line_editor.LineEditor.press_backspace`, 按一下左右键 :method:`~zelfred.line_editor.LineEditor.press_left` 等. 人类按下按键后, 内存中的数据就要对应地发生变化. 所以我们把这些变化用人类可读的方法封装了起来, 这样能大幅增加代码可读性.
 
 
 Dropdown Menu
@@ -26,7 +78,7 @@ Dropdown Menu
 4. 最多显示多少个 item 的常数.
 5. 上下滚动时跳过多少个 item 的常数.
 
-类似 ``LineEditor`` 这个类也实现了很多用于模拟人类的键盘动作的行为. 例如上下键选择 item, 上下滚动等等.
+类似 ``LineEditor`` 这个类也实现了很多用于模拟人类的键盘动作的行为. 例如上下键选择 item :meth:`~zelfred.dropdown.Dropdown.press_down`, 上下滚动 :meth:`~zelfred.dropdown.Dropdown.scroll_down`等等.
 
 
 Item
@@ -70,16 +122,24 @@ Render Engine
 
 Keystroke Event
 ------------------------------------------------------------------------------
+每当 UI rendering 结束后就会调用 :meth:`zelfred.events.KeyEventGenerator.next` 这个方法以等待 (跟 ``input`` 函数类似) 下一个用户输入.
+
 :meth:`UI.main_loop <zelfred.ui.UI.main_loop>`, :meth:`UI.process_input <zelfred.ui.UI.process_input>`, :meth:`UI.process_input <zelfred.ui.UI.process_key_pressed_input>`
 
 
 Shortcut Key
 ------------------------------------------------------------------------------
+快捷键和用户输入的 key 本质上都是一样的. :class:`~zelfred.ui_process_key_pressed.py.UIProcessKeyPressedMixin` 类中有很多方法, 枚举了对应每个快捷键 (例如 Ctrl + R / Ctrl + F 对 dropdown menu 的上下滚动) 的处理逻辑. 然后用 :meth:`~zelfred.ui_process_key_pressed.py.UIProcessKeyPressedMixin._create_key_processor_mapper` 把 key 的字符串和这些方法对应起来. 如果这个 key 在 mapper 中没有定义, 则默认认为是用户打字输入 query, 这在 :meth:`~zelfred.ui_process_key_pressed.py.UIProcessKeyPressedMixin._process_key_pressed_input` 方法的源码中可以看得很清楚.
+
+
+默认选中 Item 按下 Item Action 快捷键后会退出 App
+------------------------------------------------------------------------------
+以 Enter 键微粒, 按下 Enter 之后会调用 :meth:`Item.enter_handler <zelfred.item.Item.enter_handler>` 和 :meth:`Item.enter_handler <zelfred.item.Item.post_enter_handler>`, 其中 :meth:`Item.enter_handler <zelfred.item.Item.post_enter_handler>` 默认会抛出 :class:`~zelfred.exc.EndOfInputError` 异常, 而这个异常会在 App 的入口函数 :meth:`UI.run <zelfred.ui.UI.run>` 中被 ``try ... except ...`` 捕获并打印异常信息并结束程序.
 
 
 如何实现选中 Item 按下 Item Action 快键键后不退出 App
 ------------------------------------------------------------------------------
-当你按下任何跟 Item Action 相关的快捷键 (例如 Enter, Ctrl + A 等等), 会调用相关的方法, 例如 :meth:`~zelfred.ui_process_key_pressed.UIProcessKeyPressedMixin.process_enter` 这个. 而观察这个方法会依次运行 :meth:`Item.enter_handler <zelfred.item.Item.enter_handler>` 和 :meth:`Item.enter_handler <zelfred.item.Item.post_enter_handler>` 方法. 默认情况下 ``post_enter_handler`` 会抛出 ``EndOfInputError`` 异常. 如果你要将其设为按下 Item Action 快捷键后不退出, 你在你的自定义 handler 返回的 item 类中 override ``post_enter_handler`` 方法, 把它设为 ``pass``, 什么都不做即可.
+当你按下任何跟 Item Action 相关的快捷键 (例如 Enter, Ctrl + A 等等), 会调用相关的方法, 例如 :meth:`~zelfred.ui_process_key_pressed.UIProcessKeyPressedMixin.process_enter` 这个. 而观察这个方法会依次运行 :meth:`Item.enter_handler <zelfred.item.Item.enter_handler>` 和 :meth:`Item.enter_handler <zelfred.item.Item.post_enter_handler>` 方法. 默认情况下 ``post_enter_handler`` 会抛出 ``EndOfInputError`` 异常. 如果你要将其设为按下 Item Action 快捷键后不退出, 你在你的自定义 handler 返回的 item 类中 override ``post_enter_handler`` 方法, 把它设为 ``pass``, 什么都不做即可. 那么按下 Enter 之后就会进入下一个循环 (等待用户输入下一个字符)
 
 
 如何实现按进入 sub session
