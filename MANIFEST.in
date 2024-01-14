@@ -8,3 +8,6 @@ include *.txt
 include *.rst
 exclude *.pyc
 exclude *.pyo
+exclude zelfred/docs/**.*
+exclude zelfred/tests/**.*
+exclude zelfred/gallery/**.*

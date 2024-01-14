@@ -10,6 +10,7 @@ sub packages and modules
 .. toctree::
     :maxdepth: 1
 
+    gallery <gallery/__init__>
     action <action>
     api <api>
     constants <constants>

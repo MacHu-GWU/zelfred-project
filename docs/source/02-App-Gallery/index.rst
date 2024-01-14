@@ -17,7 +17,7 @@ The user enters the length of the password, and the UI generates a few random pa
 
 .. dropdown:: **Source Code**
 
-    .. literalinclude:: ./e01_random_password_generator.py
+    .. literalinclude:: ../../../zelfred/gallery/./e01_random_password_generator.py
        :language: python
        :linenos:
 
@@ -35,7 +35,7 @@ The user enters (or paste) the absolute path of the file, and the UI generates a
 
 .. dropdown:: **Source Code**
 
-    .. literalinclude:: ./e02_calculate_file_checksum.py
+    .. literalinclude:: ../../../zelfred/gallery/./e02_calculate_file_checksum.py
        :language: python
        :linenos:
 
@@ -53,7 +53,7 @@ Use the user input to sort a list of items by fuzzy match similarity. Allow user
 
 .. dropdown:: **Source Code**
 
-    .. literalinclude:: ./e03_select_item_using_fuzzy_match.py
+    .. literalinclude:: ../../../zelfred/gallery/./e03_select_item_using_fuzzy_match.py
        :language: python
        :linenos:
 
@@ -71,7 +71,7 @@ The user types a query and receives a dropdown list of Google search suggestions
 
 .. dropdown:: **Source Code**
 
-    .. literalinclude:: ./e04_google_search_with_suggestion.py
+    .. literalinclude:: ../../../zelfred/gallery/./e04_google_search_with_suggestion.py
        :language: python
        :linenos:
 
@@ -89,7 +89,7 @@ User type query and return a dropdown list of matched Google Chrome bookmarks. U
 
 .. dropdown:: **Source Code**
 
-    .. literalinclude:: ./e05_search_google_chrome_bookmark.py
+    .. literalinclude:: ../../../zelfred/gallery/./e05_search_google_chrome_bookmark.py
        :language: python
        :linenos:
 
@@ -109,7 +109,7 @@ User can search folder in a root directory, and then tap "Enter" to enter a sub 
 
 .. dropdown:: **Source Code**
 
-    .. literalinclude:: ./e06_folder_and_file_search.py
+    .. literalinclude:: ../../../zelfred/gallery/./e06_folder_and_file_search.py
        :language: python
        :linenos:
 
@@ -127,12 +127,12 @@ User the user input to search the username, allow user to tap "Ctrl A" to copy t
 
 .. dropdown:: **Source Code**
 
-    .. literalinclude:: ./e05_password_book.py
+    .. literalinclude:: ../../../zelfred/gallery/./e05_password_book.py
        :language: python
        :linenos:
 
 
-Refresh Cache
+Refresh Cache V1
 ------------------------------------------------------------------------------
 :bdg-warning:`Difficulty: Medium`
 
@@ -145,7 +145,43 @@ No matter what user entered, always return a random value between 1 and 100. And
 
 .. dropdown:: **Source Code**
 
-    .. literalinclude:: ./e08_refresh_cache.py
+    .. literalinclude:: ../../../zelfred/gallery/./e08_refresh_cache_v1.py
+       :language: python
+       :linenos:
+
+
+Refresh Cache V2
+------------------------------------------------------------------------------
+:bdg-warning:`Difficulty: Medium`
+
+No matter what user entered, always return a random value between 1 and 100. And this value is based on cache that won't change while user is typing. However, we want to provide a way to refresh the value. User can type "!~", then the value will be immediately refreshed, and the "!~" will be removed automatically.
+
+**Demo**
+
+.. image:: https://asciinema.org/a/631325.svg
+    :target: https://asciinema.org/a/631325
+
+.. dropdown:: **Source Code**
+
+    .. literalinclude:: ../../../zelfred/gallery/./e09_refresh_cache_v2.py
+       :language: python
+       :linenos:
+
+
+Refresh Cache V3
+------------------------------------------------------------------------------
+:bdg-warning:`Difficulty: Medium`
+
+No matter what user entered, always return a random value between 1 and 100. And this value is based on cache that won't change while user is typing. However, we want to provide a way to refresh the value. User can type "!~", then the value will be refreshed after 1 seconds, and the "!~" will be removed automatically. During the waiting, it will show a helper text to tell user to wait.
+
+**Demo**
+
+.. image:: https://asciinema.org/a/631335.svg
+    :target: https://asciinema.org/a/631335
+
+.. dropdown:: **Source Code**
+
+    .. literalinclude:: ../../../zelfred/gallery/./e10_refresh_cache_v3.py
        :language: python
        :linenos:
 
@@ -161,6 +197,6 @@ Copy JSON text to clipboard, then hit 'Enter' to dump the formatted JSON to
 
 .. dropdown:: **Source Code**
 
-    .. literalinclude:: ./e09_json_formatter.py
+    .. literalinclude:: ../../../zelfred/gallery/./e11_json_formatter.py
        :language: python
        :linenos:
