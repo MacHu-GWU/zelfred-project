@@ -25,13 +25,14 @@ x.y.z (Backlog)
 **Minor Improvements**
 
 - Add the following sample app to app gallery:
-    - refresh_cache
+    - refresh_cache_v1
+    - refresh_cache_v2
+    - refresh_cache_v3
     - json_formatter
-
-**Bugfixes**
 
 **Miscellaneous**
 
+- Add "Maintainer Guide" document.
 
 0.2.4 (2023-11-01)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
