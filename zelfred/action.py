@@ -69,6 +69,25 @@ def open_file(path: Path):  # pragma: no cover
         subprocess.run(["open", str(path)])
 
 
+def open_file_or_print(path: Path):  # pragma: no cover
+    """
+    Open a file in the default application. If your system doesn't support
+    open file, for example, if it is in an SSH remote shell, it will print the path
+    to the terminal.
+    """
+    try:
+        open_file(path)
+    except FileNotFoundError as e:
+        if str(path) in str(e) or "open" in str(e):
+            print(
+                f"❗ Your system doesn't support open file, "
+                f"we print the file path here so you can copy manually."
+            )
+            print(path)
+        else:
+            raise e
+
+
 def copy_text(text: str):  # pragma: no cover
     """
     Copy text to clipboard.

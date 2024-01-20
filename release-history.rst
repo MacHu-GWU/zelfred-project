@@ -15,7 +15,17 @@ x.y.z (Backlog)
 **Miscellaneous**
 
 
-0.3.1 (Backlog)
+0.3.2 (2023-01-20)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+**Minor Improvements**
+
+- Forget to add the following public API in 0.3.1, now they are available:
+    - ``zelfred.api.open_url_or_print``
+    - ``zelfred.api.open_file_or_print``
+    - ``zelfred.api.copy_or_print``
+
+
+0.3.1 (2023-01-14)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 **Features and Improvements**
 
@@ -33,6 +43,7 @@ x.y.z (Backlog)
 **Miscellaneous**
 
 - Add "Maintainer Guide" document.
+
 
 0.2.4 (2023-11-01)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

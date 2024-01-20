@@ -21,7 +21,10 @@ from .ui import UI
 from .ui import T_UI
 from .ui import T_HANDLER
 from .action import open_url
+from .action import open_url_or_print
 from .action import open_file
+from .action import open_file_or_print
 from .action import copy_text
+from .action import copy_or_print
 from .debug import debugger
 from . import exc
