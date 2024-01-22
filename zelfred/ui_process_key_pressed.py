@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-This module implements the key pressed event processing logics.
+See :class:`UIProcessKeyPressedMixin`.
 """
 
 import typing as T
@@ -16,6 +16,7 @@ if T.TYPE_CHECKING:
 
 class UIProcessKeyPressedMixin:
     """
+    This class implements the key pressed event processing logics.
 
     **Important**
 

@@ -24,5 +24,6 @@ sub packages and modules
     query <query>
     render <render>
     ui <ui>
+    ui_formatter <ui_formatter>
     ui_process_key_pressed <ui_process_key_pressed>
     

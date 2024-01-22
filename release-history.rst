@@ -15,6 +15,29 @@ x.y.z (Backlog)
 **Miscellaneous**
 
 
+0.4.1 (2024-01-22)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+**Features and Improvements**
+
+- Add the following public API related to terminal output formatter helper functions.
+    - ``zelfred.api.UI.format_shortcut``
+    - ``zelfred.api.UI.TAB``
+    - ``zelfred.api.UI.ENTER``
+    - ``zelfred.api.UI.CTRL_A``
+    - ``zelfred.api.UI.CTRL_W``
+    - ``zelfred.api.UI.CTRL_U``
+    - ``zelfred.api.UI.CTRL_P``
+    - ``zelfred.api.UI.F1``
+    - ``zelfred.api.UI.CTRL_T``
+    - ``zelfred.api.UI.CTRL_G``
+    - ``zelfred.api.UI.CTRL_B``
+    - ``zelfred.api.UI.CTRL_N``
+    - ``zelfred.api.UI.format_highlight``
+    - ``zelfred.api.UI.format_key``
+    - ``zelfred.api.UI.format_value``
+    - ``zelfred.api.UI.format_key_value``
+
+
 0.3.2 (2023-01-20)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 **Minor Improvements**

@@ -21,6 +21,7 @@ from .line_editor import LineEditor
 from .dropdown import Dropdown
 from .render import UIRender, T_UI_RENDER
 from .debug import debugger
+from .ui_formatter import UIFormatterMixin
 from .ui_process_key_pressed import UIProcessKeyPressedMixin
 
 
@@ -68,6 +69,7 @@ T_HANDLER = T.Callable[[str, T.Optional["UI"]], T.List[T_ITEM]]
 
 
 class UI(
+    UIFormatterMixin,
     UIProcessKeyPressedMixin,
 ):
     """
